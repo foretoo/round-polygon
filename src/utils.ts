@@ -30,3 +30,18 @@ export const get_clock_dir = (
     ? -1 : 1
   )
 }
+
+export const get_angles = (
+  prev_point: Point,
+  curr_point: Point,
+  next_point: Point,
+) => {
+  const
+    main = find_angle(prev_point, curr_point, next_point),
+    prev = find_angle(curr_point, prev_point),
+    next = find_angle(curr_point, next_point),
+    dir  = get_clock_dir(prev, next),
+    bis  = prev + dir * main / 2
+  
+  return { main, next, prev, bis, dir }
+}
