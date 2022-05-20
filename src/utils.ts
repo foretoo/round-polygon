@@ -45,3 +45,11 @@ export const get_angles = (
   
   return { main, next, prev, bis, dir }
 }
+
+export const getprev =
+  <T>(i: number, arr: T[]): T =>
+    arr[(i - 1 + arr.length) % arr.length]
+
+export const getnext =
+  <T>(i: number, arr: T[]): T =>
+    arr[(i + 1) % arr.length]
