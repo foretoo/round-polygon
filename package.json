@@ -1,0 +1,30 @@
+{
+  "name": "round-polygon",
+  "description": "Small, typed, dependency free tool to round corners of 2d-polygon provided by an array of { x, y } points.",
+  "keywords": [ "2d", "tool", "library", "geometry", "round", "arc", "circle", "polygon", "shape", "corner" ],
+  "author": "Sergey Borovikov",
+  "version": "0.3.0",
+  "module": "./lib/round-polygon.es.js",
+  "main": "./lib/round-polygon.cjs.js",
+  "types": "./lib/index.d.ts",
+  "files": [ "/lib" ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/foretoo/round-polygon.git"
+  },
+  "bugs": {
+    "url": "https://github.com/foretoo/round-polygon/issues"
+  },
+  "homepage": "https://github.com/foretoo/round-polygon#readme",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "sass": "^1.52.0",
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9",
+    "vite-plugin-dts": "^1.1.1"
+  }
+}
