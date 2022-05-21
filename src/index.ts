@@ -1,5 +1,5 @@
 import { Point, Linked, PreRoundedPoint, RoundedPoint } from "./types"
-import { getLength, getAngles, getNext, getPrev } from "./utils"
+import { getLength, getAngles } from "./utils"
 
 
 
@@ -7,7 +7,7 @@ const roundPolygon = (
   points: Point[], radius: number
 ): Linked<RoundedPoint>[] => {
 
-  const preRoundedPoints: PreRoundedPoint[] =
+  const preRoundedPoints: Linked<PreRoundedPoint>[] =
   points.map((curr, id) => {
 
     const
@@ -24,42 +24,28 @@ const roundPolygon = (
       arc: { radius, hit: radius },
       in: { length: prev_length, rest: prev_length },
       out: { length: next_length, rest: next_length },
-      locked: false
+      locked: false,
+      id,
+      get prev() { return preRoundedPoints[(id - 1 + points.length) % points.length] },
+      get next() { return preRoundedPoints[(id + 1) % points.length] },
     }
   })
 
-  const linkedPreRoundedPoints = preRoundedPoints.reduce((
-    shape: Linked<PreRoundedPoint>[], p: PreRoundedPoint, id: number
-  ) => {
-    const curr = {
-      ...p,
-      id,
-      get prev() { return getPrev(id, shape) },
-      get next() { return getNext(id, shape) },
-    }
-    curr.arc.hit = Math.min(
-      p.out.length / (curr.angle.vel + curr.next.angle.vel),
-      p.in.length  / (curr.angle.vel + curr.prev.angle.vel),
+  preRoundedPoints.forEach((p) => {
+    p.arc.hit = Math.min(
+      p.out.length / (p.angle.vel + p.next.angle.vel),
+      p.in.length  / (p.angle.vel + p.prev.angle.vel),
     )
-    return shape.concat(curr)
-  }, [])
+  })
 
-  const roundedPoints = linkedPreRoundedPoints.reduce(finSet, [])
+  const roundedPoints: Linked<RoundedPoint>[] =
+  preRoundedPoints.map((p, id) => {
 
-  return roundedPoints
-}
+    const
+      bisLength = p.arc.radius / Math.sin(p.angle.main / 2),
+      offset = p.arc.radius * p.angle.vel
 
-
-
-const finSet = (
-  shape: Linked<RoundedPoint>[], p: Linked<PreRoundedPoint>, id: number
-) => {
-
-  const
-    bisLength = p.arc.radius / Math.sin(p.angle.main / 2),
-    offset = p.arc.radius * p.angle.vel,
-    point: Linked<RoundedPoint> = {
-      id,
+    return {
       x: p.x,
       y: p.y,
       angle: p.angle,
@@ -79,11 +65,13 @@ const finSet = (
         x: p.x + Math.cos(p.angle.next) * offset,
         y: p.y + Math.sin(p.angle.next) * offset,
       },
-      get prev() { return getPrev(id, shape) },
-      get next() { return getNext(id, shape) },
+      id,
+      get prev() { return roundedPoints[(id - 1 + points.length) % points.length] },
+      get next() { return roundedPoints[(id + 1) % points.length] },
     }
+  })
 
-  return shape.concat(point)
+  return roundedPoints
 }
 
 
