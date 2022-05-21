@@ -43,10 +43,12 @@ const roundPolygon = (
     )
   })
 
-  // while (i) {
-  //   preRoundedPoints.sort(minArcHit)
-  //   i--
-  // }
+  // calc valid radius and edge offset
+  while (i) {
+    preRoundedPoints.sort(minArcHit)
+    calcRound(preRoundedPoints[0], preRoundedPoints, radius)
+  }
+  preRoundedPoints.sort((a, b) => a.id - b.id)
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] =
