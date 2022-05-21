@@ -87,6 +87,130 @@ const roundPolygon = (
 
 
 
+const calcRound = (
+  curr:   Linked<PreRoundedPoint>,
+  points: Linked<PreRoundedPoint>[],
+  radius: number
+) => {
+
+  if (!curr.locked) {
+    const prev = points.find((p) => p.id === (curr.id - 1 + points.length) % points.length)!
+    const next = points.find((p) => p.id === (curr.id + 1) % points.length)!
+
+    if (radius >= curr.arc.hit) {
+      if (curr.arc.hit === next.arc.hit) {
+        const _prev  = points.find((p) => p.id === (prev.id - 1 + points.length) % points.length)!
+        const _next  = points.find((p) => p.id === (next.id + 1) % points.length)!
+        const _nnext = points.find((p) => p.id === (_next.id + 1) % points.length)!
+
+        curr.arc.radius = curr.arc.hit
+        next.arc.radius = curr.arc.hit
+        next.locked = true
+        curr.locked = true
+        i -= 2
+
+        curr.offset = curr.arc.radius * curr.angle.vel
+        next.offset = next.arc.radius * next.angle.vel
+
+       _next.in.rest  -= next.offset
+        next.out.rest -= next.offset
+        next.in.rest  -= next.offset
+        next.in.rest  -= curr.offset
+        curr.out.rest -= curr.offset
+        curr.in.rest  -= curr.offset
+        prev.out.rest -= curr.offset
+
+       _next.arc.hit = Math.min(
+          _next.out.length / (_next.angle.vel + _nnext.angle.vel),
+          _next.in.rest / _next.angle.vel
+        )
+        prev.arc.hit = Math.min(
+          prev.in.length / (prev.angle.vel + _prev.angle.vel),
+          prev.out.rest / prev.angle.vel
+        )
+      }
+      else if (curr.arc.hit === prev.arc.hit) {
+        const _next  = points.find((p) => p.id === (next.id + 1) % points.length)!
+        const _prev  = points.find((p) => p.id === (prev.id - 1 + points.length) % points.length)!
+        const _pprev = points.find((p) => p.id === (_prev.id - 1 + points.length) % points.length)!
+
+        curr.arc.radius = curr.arc.hit
+        prev.arc.radius = curr.arc.hit
+        curr.locked = true
+        prev.locked = true
+        i -= 2
+
+        curr.offset = curr.arc.radius * curr.angle.vel
+        prev.offset = prev.arc.radius * prev.angle.vel
+
+       _prev.out.rest -= prev.offset
+        prev.in.rest  -= prev.offset
+        prev.out.rest -= prev.offset
+        prev.out.rest -= curr.offset
+        curr.in.rest  -= curr.offset
+        curr.out.rest -= curr.offset
+        next.in.rest  -= curr.offset
+
+       _prev.arc.hit = Math.min(
+          _prev.in.length / (_prev.angle.vel + _pprev.angle.vel),
+          _prev.out.rest / _prev.angle.vel
+        )
+        next.arc.hit = Math.min(
+          next.out.length / (next.angle.vel + _next.angle.vel),
+          next.in.rest / next.angle.vel
+        )
+      }
+      else {
+
+        if (prev.locked && !next.locked) {
+          curr.arc.radius = Math.min(
+            curr.in.rest / curr.angle.vel,
+            curr.out.length / (curr.angle.vel + next.angle.vel),
+            curr.arc.radius
+          )
+        }
+        if (next.locked && !prev.locked) {
+          curr.arc.radius = Math.min(
+            curr.out.rest / curr.angle.vel,
+            curr.in.length / (curr.angle.vel + prev.angle.vel),
+            curr.arc.radius
+          )
+        }
+        if (next.locked && prev.locked) {          
+          curr.arc.radius = Math.min(
+            curr.in.rest / curr.angle.vel,
+            curr.out.rest / curr.angle.vel,
+            curr.arc.radius
+          )
+        }
+
+        curr.offset = curr.arc.radius * curr.angle.vel
+
+        prev.out.rest -= curr.offset
+        curr.in.rest -= curr.offset
+        curr.out.rest -= curr.offset
+        next.in.rest -= curr.offset
+
+        curr.locked = true
+        i--
+      }
+    }
+    else {
+      curr.offset = curr.arc.radius * curr.angle.vel
+
+      prev.out.rest -= curr.offset
+      curr.in.rest -= curr.offset
+      curr.out.rest -= curr.offset
+      next.in.rest -= curr.offset
+
+      curr.locked = true
+      i--
+    }
+  }
+}
+
+
+
 const minArcHit = (
   a: Linked<PreRoundedPoint>, b: Linked<PreRoundedPoint>
 ) => {
