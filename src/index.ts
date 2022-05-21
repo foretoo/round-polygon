@@ -79,4 +79,15 @@ const roundPolygon = (
 
 
 
+const minArcHit = (
+  a: Linked<PreRoundedPoint>, b: Linked<PreRoundedPoint>
+) => {
+  if (a.locked && !b.locked) return 1
+  else if (!a.locked && b.locked) return -1
+  else if (a.locked && b.locked) return 0
+  else return a.arc.hit - b.arc.hit
+}
+
+
+
 export default roundPolygon
