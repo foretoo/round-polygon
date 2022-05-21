@@ -34,8 +34,8 @@ type PreRoundedPoint = Omit<RoundedPoint, "in" | "out" | "arc"> & {
 
 type Linked<T> = T & {
   id: number
-  prev: T
-  next: T
+  prev: Linked<T>
+  next: Linked<T>
 }
 
 export {
