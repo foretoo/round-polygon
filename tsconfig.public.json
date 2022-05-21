@@ -5,5 +5,5 @@
     "moduleResolution": "node",
     "outDir": "public",
   },
-  "files": ["src/demo.ts"]
+  "files": ["src/demo/demo.ts"]
 }
