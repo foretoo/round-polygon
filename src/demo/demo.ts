@@ -1,8 +1,8 @@
 import "./style.sass"
-import { Linked, RoundedPoint } from "./types"
-import { assignValue } from "./utils"
+import { Linked, RoundedPoint } from "../types"
+import { assignValue } from "../utils"
 import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, Point, arc, text, font, settext, PI } from "bratik"
-import roundPolygon from "."
+import roundPolygon from ".."
 
 const { canvas } = getcanvas(),
       points: Point[] = [],
@@ -77,14 +77,6 @@ const draw = () => {
             x = p.x - Math.cos(bis) * 24,
             y = p.y - Math.sin(bis) * 24
       text(`${i}`, x, y)
-
-      font(10)
-      const inx = x - Math.cos(bis + PI / 2) * 24,
-            iny = y - Math.sin(bis + PI / 2) * 24
-      text(`in`, inx, iny)
-      const outx = x - Math.cos(bis - PI / 2) * 24,
-            outy = y - Math.sin(bis - PI / 2) * 24
-      text(`out`, outx, outy)
     })
   }
 }

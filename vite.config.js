@@ -5,7 +5,7 @@ import dts from "vite-plugin-dts"
 export default defineConfig({
   server: {
     host: true,
-    open: "/src/index.html",
+    open: "/src/demo/index.html",
   },
   publicDir: false,
   build: {
