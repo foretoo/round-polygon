@@ -7,6 +7,7 @@ const roundPolygon = (
   points: Point[], radius: number
 ): Linked<RoundedPoint>[] => {
 
+  // prepare points, calc angles
   const preRoundedPoints: Linked<PreRoundedPoint>[] =
   points.map((curr, id) => {
 
@@ -31,6 +32,7 @@ const roundPolygon = (
     }
   })
 
+  // calc collision radius for each point
   preRoundedPoints.forEach((p) => {
     p.arc.hit = Math.min(
       p.out.length / (p.angle.vel + p.next.angle.vel),
@@ -38,6 +40,7 @@ const roundPolygon = (
     )
   })
 
+  // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] =
   preRoundedPoints.map((p, id) => {
 
