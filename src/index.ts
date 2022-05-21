@@ -19,7 +19,6 @@ const roundPolygon = (
 
     return {
       ...curr,
-      id,
       angle,
       offset: 0,
       arc: { radius, hit: radius },
@@ -29,7 +28,23 @@ const roundPolygon = (
     }
   })
 
-  const roundedPoints = preRoundedPoints.reduce(finSet, [])
+  const linkedPreRoundedPoints = preRoundedPoints.reduce((
+    shape: Linked<PreRoundedPoint>[], p: PreRoundedPoint, id: number
+  ) => {
+    const curr = {
+      ...p,
+      id,
+      get prev() { return getPrev(id, shape) },
+      get next() { return getNext(id, shape) },
+    }
+    curr.arc.hit = Math.min(
+      p.out.length / (curr.angle.vel + curr.next.angle.vel),
+      p.in.length  / (curr.angle.vel + curr.prev.angle.vel),
+    )
+    return shape.concat(curr)
+  }, [])
+
+  const roundedPoints = linkedPreRoundedPoints.reduce(finSet, [])
 
   return roundedPoints
 }
@@ -37,7 +52,7 @@ const roundPolygon = (
 
 
 const finSet = (
-  shape: Linked<RoundedPoint>[], p: PreRoundedPoint, id: number
+  shape: Linked<RoundedPoint>[], p: Linked<PreRoundedPoint>, id: number
 ) => {
 
   const
