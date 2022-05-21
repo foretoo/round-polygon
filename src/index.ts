@@ -3,9 +3,12 @@ import { getLength, getAngles } from "./utils"
 
 
 
+let i: number
 const roundPolygon = (
   points: Point[], radius: number
 ): Linked<RoundedPoint>[] => {
+
+  i = points.length
 
   // prepare points, calc angles
   const preRoundedPoints: Linked<PreRoundedPoint>[] =
@@ -39,6 +42,11 @@ const roundPolygon = (
       p.in.length  / (p.angle.vel + p.prev.angle.vel),
     )
   })
+
+  // while (i) {
+  //   preRoundedPoints.sort(minArcHit)
+  //   i--
+  // }
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] =
