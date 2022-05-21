@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: none;
+  font-family: monospace;
+  font-size: 20px;
+  line-height: 1rem;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  position: relative;
+  display: grid;
+  justify-items: center;
+}
+
+canvas {
+  display: block;
+}
+
+label, p {
+  position: absolute;
+  font-size: 0.8rem;
+  line-height: 1em;
+}
+
+label {
+  width: 100%;
+  top: 2rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+label input {
+  width: 50%;
+}
+label span {
+  width: calc(25% - 1rem);
+  font-size: inherit;
+}
+label span:first-child {
+  text-align: right;
+}
+
+p {
+  bottom: 2rem;
+  text-align: center;
+}
