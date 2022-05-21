@@ -27,7 +27,6 @@ type RoundedPoint = Point & {
 }
 
 type PreRoundedPoint = Omit<RoundedPoint, "in" | "out" | "arc"> & {
-  id: number
   in:  { length: number, rest: number }
   out: { length: number, rest: number }
   arc: { radius: number, hit: number }
