@@ -21,9 +21,10 @@ const roundPolygon = (
       ...curr,
       id,
       angle,
-      arc: { x: curr.x, y: curr.y, radius, hit: radius, from: 0, to: 0 },
-      in: { x: curr.x, y: curr.y, length: prev_length, rest: prev_length },
-      out: { x: curr.x, y: curr.y, length: next_length, rest: next_length },
+      offset: 0,
+      arc: { radius, hit: radius },
+      in: { length: prev_length, rest: prev_length },
+      out: { length: next_length, rest: next_length },
       locked: false
     }
   })
