@@ -23,12 +23,10 @@ type RoundedPoint = Point & {
   out: RoundedSide
   arc: Point & {
     radius: number,
-    from: number,
-    to: number
   }
 }
 
-type PreRoundedPoint = RoundedPoint & {
+type PreRoundedPoint = Omit<RoundedPoint, "offset"> & {
   in: { rest: number }
   out: { rest: number }
   arc: { hit: number }
