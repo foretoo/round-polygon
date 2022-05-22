@@ -24,8 +24,9 @@
     "preview": "vite preview"
   },
   "devDependencies": {
-    "bratik": "^0.3.2",
+    "bratik": "^0.3.7",
     "sass": "^1.52.0",
+    "simplex-noise": "^3.0.1",
     "typescript": "^4.5.4",
     "vite": "^2.9.9",
     "vite-plugin-dts": "^1.1.1"
