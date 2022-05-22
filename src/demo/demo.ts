@@ -1,7 +1,7 @@
 import "./style.sass"
-import { Linked, RoundedPoint } from "../types"
+import { Linked, Point, RoundedPoint } from "../types"
 import { assignValue } from "../utils"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, Point, arc, text, font, settext, PI } from "bratik"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext } from "bratik"
 import roundPolygon from ".."
 
 const { canvas } = getcanvas(),
@@ -44,7 +44,7 @@ const draw = () => {
 
   if (points.length > 2) {
     fill(bluish)
-    stroke("blue", 1)
+    stroke(null)
     shape()
     polygon.forEach((p, i) => {
       if (!i) vertex(p.in.x, p.in.y);
@@ -62,7 +62,7 @@ const draw = () => {
 
       //// Arcs of roundings, stroked
       fill(null)
-      stroke("black", 3)
+      stroke("blue", 2)
       shape()
       vertex(p.in.x, p.in.y)
       arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
