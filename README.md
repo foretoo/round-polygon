@@ -101,7 +101,7 @@ const
 ctx.beginPath()
 roundedPolygon.forEach((p) => {
   ctx.moveTo(p.in.x, p.in.y)
-  ctx.arcTo(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
+  ctx.arcTo(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
   ctx.lineTo(p.next.in.x, p.next.in.y)
 })
 ctx.stroke()
