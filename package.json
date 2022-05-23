@@ -20,7 +20,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
-    "public": "sass src/style.sass public/style.css --no-source-map && tsc --project tsconfig.public.json",
+    "public": "sass src/demo/style.sass public/style.css --no-source-map && tsc --project tsconfig.public.json",
     "preview": "vite preview"
   },
   "devDependencies": {

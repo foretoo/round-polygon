@@ -1,25 +1,47 @@
 import "./style.sass"
 import { Linked, Point, RoundedPoint } from "../types"
-import { assignValue } from "../utils"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext } from "bratik"
+import {
+  getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate
+} from "bratik"
 import roundPolygon from ".."
 
-const { canvas } = getcanvas(),
-      points: Point[] = [],
-      grey = "#0007",
-      bluish = "#00f7"
+const 
+  { ctx, height, width } = getcanvas(),
+  pointnum = 6,
+  grey = "#0007",
+  skin = "#f407",
+  padding = -Math.min(width, height) / 10,
+  radiusrange = document.querySelector("input")!,
+  radiusvalue = document.querySelector("#radiusvalue")!
       
-let polygon: Linked<RoundedPoint>[]
+ctx.lineCap = "round"
+ctx.lineJoin = "round"
+let points: Point[] = [],
+    polygon: Linked<RoundedPoint>[]
 
+for (let i = 0; i < pointnum; i++) points[i] = { x: width/2, y: height/2 }
+polygon = roundPolygon(points, +radiusrange.value)
+draw()
 
-canvas.onpointerdown = (e: PointerEvent) => {
-  const point = { x: e.pageX, y: e.pageY }
-  assignValue(point, points, 5)
+const animatepoint = (p: Point) => {
+  const
+    moveX = animate(8000, "cubicInOut"),
+    moveY = animate(8000, "cubicInOut"),
+    newpoint = getrandpoint()
+
+  moveX(p, { x: newpoint.x })
+  moveY(p, { y: newpoint.y })
+}
+points.forEach(animatepoint)
+
+const play = () => {
+  if (frame % 480 === 0) points.forEach(animatepoint)
   polygon = roundPolygon(points, +radiusrange.value)
   draw()
 }
-const radiusrange = document.querySelector("input")!
-const radiusvalue = document.querySelector("#radiusvalue")!
+loop(play)
+
+
 radiusvalue.textContent = radiusrange.value
 radiusrange.oninput = (e: Event) => {
   const target = e.target as HTMLInputElement
@@ -29,7 +51,7 @@ radiusrange.oninput = (e: Event) => {
 }
 
 
-const draw = () => {
+function draw() {
   clear()
 
   stroke(grey, 0.5)
@@ -43,7 +65,7 @@ const draw = () => {
   points.forEach((p) => circle(p.x, p.y, 1))
 
   if (points.length > 2) {
-    fill(bluish)
+    fill(skin)
     stroke(null)
     shape()
     polygon.forEach((p, i) => {
@@ -62,7 +84,7 @@ const draw = () => {
 
       //// Arcs of roundings, stroked
       fill(null)
-      stroke("blue", 2)
+      stroke("blue", 4)
       shape()
       vertex(p.in.x, p.in.y)
       arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
@@ -78,5 +100,13 @@ const draw = () => {
             y = p.y - Math.sin(bis) * 24
       text(`${i}`, x, y)
     })
+  }
+}
+
+
+function getrandpoint() {
+  return {
+    x: padding + Math.random() * (width - padding * 2),
+    y: padding + Math.random() * (height - padding * 2),
   }
 }
