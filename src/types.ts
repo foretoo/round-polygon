@@ -1,11 +1,4 @@
-type Point = {
-  x: number
-  y: number
-}
-
-type RoundedSide = Point & {
-  length: number
-}
+type Point = { x: number, y: number }
 
 type Angles = {
   main: number
@@ -16,21 +9,23 @@ type Angles = {
   vel: number
 }
 
-type RoundedPoint = Point & {
+type PreRoundedPoint = Point & {
   offset: number
   angle: Angles
-  in: RoundedSide
-  out: RoundedSide
-  arc: Point & {
-    radius: number,
-  }
-}
-
-type PreRoundedPoint = Omit<RoundedPoint, "in" | "out" | "arc"> & {
   in:  { length: number, rest: number }
   out: { length: number, rest: number }
   arc: { radius: number, hit: number }
   locked: boolean
+}
+
+type RoundedSide = Point & { length: number }
+
+type RoundedPoint = Point & {
+  offset: number
+  angle: Omit<Angles, "vel">
+  in: RoundedSide
+  out: RoundedSide
+  arc: Point & { radius: number }
 }
 
 type Linked<T> = T & {

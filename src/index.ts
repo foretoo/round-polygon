@@ -61,7 +61,13 @@ const roundPolygon = (
     return {
       x: p.x,
       y: p.y,
-      angle: p.angle,
+      angle: {
+        main: p.angle.main,
+        prev: p.angle.prev,
+        next: p.angle.next,
+        bis:  p.angle.bis,
+        dir:  p.angle.dir,
+      },
       offset,
       arc: {
         radius: p.arc.radius,
