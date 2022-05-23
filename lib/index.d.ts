@@ -1,3 +1,7 @@
+declare type Point = {
+  x: number;
+  y: number;
+}
 declare type RoundedPoint = {
   x: number;
   y: number;
@@ -8,7 +12,6 @@ declare type RoundedPoint = {
     next: number;
     bis: number;
     dir: number;
-    vel: number;
   };
   in: {
     x: number;
@@ -31,7 +34,7 @@ declare type RoundedPoint = {
 };
 
 declare const roundPolygon: (
-  points: { x: number, y: number }[], radius: number
+  points: Point[], radius: number
 ) => RoundedPoint[];
 
-export default roundPolygon;
+export { roundPolygon as default, type Point, type RoundedPoint };
