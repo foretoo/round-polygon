@@ -1,6 +1,6 @@
 {
   "name": "round-polygon",
-  "version": "0.5.1",
+  "version": "0.5.9",
   "description": "Small, typed, dependency free tool to round corners of 2d-polygon provided by an array of { x, y } points.",
   "keywords": [ "2d", "tool", "library", "geometry", "round", "arc", "circle", "polygon", "shape", "corner" ],
   "author": "Sergey Borovikov",
