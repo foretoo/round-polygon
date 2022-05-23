@@ -2,33 +2,20 @@ declare type Point = {
   x: number;
   y: number;
 }
-declare type RoundedPoint = {
-  x: number;
-  y: number;
+
+declare type RoundedPoint = Point & {
   offset: number;
   angle: {
     main: number;
     prev: number;
     next: number;
-    bis: number;
-    dir: number;
+    bis:  number;
+    dir:  number;
   };
-  in: {
-    x: number;
-    y: number;
-    length: number;
-  };
-  out: {
-    x: number;
-    y: number;
-    length: number;
-  };
-  arc: {
-    x: number;
-    y: number;
-    radius: number;
-  };
-  id: number;
+  in:   Point & { length: number };
+  out:  Point & { length: number };
+  arc:  Point & { radius: number };
+  id:   number;
   prev: RoundedPoint;
   next: RoundedPoint;
 };
