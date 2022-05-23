@@ -17,11 +17,11 @@ import roundPolygon from "round-polygon"
 ```
 or if you don't use npm you can import module from unpkg:
 ```javascript
-import roundPolygon from "https://unpkg.com/round-polygon@0.5.1/lib/round-polygon.es.js"
+import roundPolygon from "https://unpkg.com/round-polygon@latest/lib/round-polygon.es.js"
 ```
 or by script tag (with a link to IIFE module) in your html page:
 ```html
-<script src="https://unpkg.com/round-polygon@0.5.1/lib/round-polygon.iife.js"></script>
+<script src="https://unpkg.com/round-polygon@latest/lib/round-polygon.iife.js"></script>
 ```
 
 ## Usage
@@ -60,7 +60,7 @@ a rounded point is an object with provided properties:
     prev: number, // the angle between prev-to-curr-line to x-Axis
     next: number, // the angle between next-to-curr-line to x-Axis
     bis: number, // the bisector angle to x-Axis
-    dir: 1 | -1 // whether clockwise (1) or counter-clockwise (-1) is the main angle direction (from the previous to the next angle)
+    dir: 1 | -1 // whether clockwise (1) or counter-clockwise (-1) is the main angle direction (from the "prev" to the "next" angle)
   },
   arc: {
     radius: number, // the rounding radius of the current point (might be less then provided as an argument (caused by rounding overlapping))
