@@ -34,7 +34,7 @@ let polygonToRound: Point[],
     roundedPolygon: RoundedPoint[]
 ```
 
-roundPolygon takes two arguments: an array of initial points and a radius
+roundPolygon function takes two arguments: an array of initial points and a radius
 
 ```javascript
 polygonToRound = [
