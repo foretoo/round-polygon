@@ -3,12 +3,9 @@ import { getLength, getAngles } from "./utils"
 
 
 
-let i: number
 const roundPolygon = (
   points: Point[], radius: number
 ): Linked<RoundedPoint>[] => {
-
-  i = points.length
 
   // prepare points, calc angles
   const preRoundedPoints: Linked<PreRoundedPoint>[] =
@@ -44,9 +41,10 @@ const roundPolygon = (
   })
 
   // calc valid radius and offset of rounding
-  while (i) {
-    preRoundedPoints.sort(minArcHit)
-    calcRound(preRoundedPoints[0], preRoundedPoints, radius)
+  let minHitPoint = getMinHit(preRoundedPoints)
+  while (minHitPoint) {
+    calcRound(minHitPoint, preRoundedPoints, radius)
+    minHitPoint = getMinHit(preRoundedPoints)
   }
   preRoundedPoints.sort((a, b) => a.id - b.id)
 
@@ -114,7 +112,6 @@ const calcRound = (
       next.arc.radius = curr.arc.hit
       next.locked = true
       curr.locked = true
-      i -= 2
 
       curr.offset = curr.arc.radius * curr.angle.vel
       next.offset = next.arc.radius * next.angle.vel
@@ -145,7 +142,7 @@ const calcRound = (
       prev.arc.radius = curr.arc.hit
       curr.locked = true
       prev.locked = true
-      i -= 2
+      // i -= 2
 
       curr.offset = curr.arc.radius * curr.angle.vel
       prev.offset = prev.arc.radius * prev.angle.vel
@@ -199,7 +196,6 @@ const calcRound = (
       next.in.rest -= curr.offset
 
       curr.locked = true
-      i--
     }
   }
   else {
@@ -211,19 +207,21 @@ const calcRound = (
     next.in.rest -= curr.offset
 
     curr.locked = true
-    i--
   }
 }
 
 
 
-const minArcHit = (
-  a: Linked<PreRoundedPoint>, b: Linked<PreRoundedPoint>
-) => {
-  if (a.locked && !b.locked) return 1
-  else if (!a.locked && b.locked) return -1
-  else if (a.locked && b.locked) return 0
-  else return a.arc.hit - b.arc.hit
+const getMinHit = (
+  arr: Linked<PreRoundedPoint>[]
+): Linked<PreRoundedPoint> | null => {
+
+  let min: Linked<PreRoundedPoint> | null = null
+  arr.forEach((p) => {
+    if (!p.locked) 
+      min = !min ? p : p.arc.hit < min.arc.hit ? p : min
+  })
+  return min
 }
 
 
