@@ -1,24 +1,38 @@
 import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate } from "https://unpkg.com/bratik@0.3.7/dist/bratik.es.js"
 import roundPolygon from "../lib/round-polygon.es.js"
-const { ctx, height, width } = getcanvas(), pointnum = 6, grey = "#0007", skin = "lightsalmon", padding = -Math.min(width, height) / 10, radiusrange = document.querySelector("input"), radiusvalue = document.querySelector("#radiusvalue")
+
+const
+  { ctx, height, width } = getcanvas(),
+  pointnum = 6,
+  grey = "#0007",
+  skin = "#f407",
+  highlight = "#e02",
+  padding = -Math.min(width, height) / 10,
+  radiusrange = document.querySelector("input"),
+  radiusvalue = document.querySelector("#radiusvalue")
+
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
+
 let points = [], polygon
 for (let i = 0; i < pointnum; i++) points[i] = { x: width / 2, y: height / 2 }
 polygon = roundPolygon(points, +radiusrange.value)
 draw()
+
 const animatepoint = (p) => {
   const moveX = animate(8000, "cubicInOut"), moveY = animate(8000, "cubicInOut"), newpoint = getrandpoint()
   moveX(p, { x: newpoint.x })
   moveY(p, { y: newpoint.y })
 }
 points.forEach(animatepoint)
+
 const play = () => {
   if (frame % 480 === 0) points.forEach(animatepoint)
   polygon = roundPolygon(points, +radiusrange.value)
   draw()
 }
 loop(play)
+
 radiusvalue.textContent = radiusrange.value
 radiusrange.oninput = (e) => {
   const target = e.target
@@ -26,6 +40,7 @@ radiusrange.oninput = (e) => {
   polygon = roundPolygon(points, +radiusrange.value)
   draw()
 }
+
 function draw() {
   clear()
   stroke(grey, 0.5)
@@ -49,11 +64,11 @@ function draw() {
     polygon.forEach((p, i) => {
       //// Centers of roundings
       stroke(null)
-      fill("firebrick")
+      fill(highlight)
       circle(p.arc.x, p.arc.y, 3)
       //// Arcs of roundings, stroked
       fill(null)
-      stroke("firebrick", 4)
+      stroke(highlight, 4)
       shape()
       vertex(p.in.x, p.in.y)
       arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
@@ -68,6 +83,7 @@ function draw() {
     })
   }
 }
+
 function getrandpoint() {
   return {
     x: padding + Math.random() * (width - padding * 2),

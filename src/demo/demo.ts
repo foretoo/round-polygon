@@ -10,6 +10,7 @@ const
   pointnum = 6,
   grey = "#0007",
   skin = "#f407",
+  highlight = "#e02",
   padding = -Math.min(width, height) / 10,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!
@@ -79,12 +80,12 @@ function draw() {
 
       //// Centers of roundings
       stroke(null)
-      fill("blue")
+      fill(highlight)
       circle(p.arc.x, p.arc.y, 3)
 
       //// Arcs of roundings, stroked
       fill(null)
-      stroke("blue", 4)
+      stroke(highlight, 4)
       shape()
       vertex(p.in.x, p.in.y)
       arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
