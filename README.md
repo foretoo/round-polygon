@@ -1,9 +1,14 @@
 
 # round-polygon
 
-Small, typed, dependency-free tool to round corners of 2d-polygon provided by an array of `{ x, y }` points.
+Small, typed, dependency-free tool to round corners of 2d-polygon provided by an array of `{ x, y }` points.
+
+The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
+
+![demo](./public/demo.png)
 
 ###  [Demo page](https://foretoo.github.io/round-polygon)
+<br/>
 
 ## Installation
 
@@ -113,6 +118,30 @@ roundedPolygon.forEach((p) => {
 ctx.stroke()
 ```
 
-The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
+## Changelog
 
-![demo](./public/demo.png)
+### Upcoming v0.6.0
+- performance improvment (clean calculations)
+- add "from" and "to" angles to arc propperty of rounded point object, as well as "length" prop
+- add ability to provide certain radius to round by to each Point
+
+### Later
+- input and output might be SVG path
+- provide bezier curve estimations as an alernative to arc propperty
+  ```typescript
+  {
+    in: { ...,
+      handle: { x: number, y: number }
+    },
+    out: { ...,
+      handle: { x: number, y: number }
+    },
+    // if main_angle < PI / 2 (so, arc > PI / 2)
+    mid: {
+      x: number,
+      y: number,
+      in: { x: number, y: number },
+      out: { x: number, y: number }
+    }
+  }
+  ```
