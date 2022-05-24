@@ -20,7 +20,11 @@ polygon = roundPolygon(points, +radiusrange.value)
 draw()
 
 const animatepoint = (p) => {
-  const moveX = animate(8000, "cubicInOut"), moveY = animate(8000, "cubicInOut"), newpoint = getrandpoint()
+  const
+    moveX = animate(8000, "cubicInOut"),
+    moveY = animate(8000, "cubicInOut"),
+    newpoint = getrandpoint()
+
   moveX(p, { x: newpoint.x })
   moveY(p, { y: newpoint.y })
 }

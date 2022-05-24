@@ -17,12 +17,12 @@ const
       
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
+
 let points: Point[] = [],
     polygon: Linked<RoundedPoint>[]
 
 for (let i = 0; i < pointnum; i++) points[i] = { x: width/2, y: height/2 }
 polygon = roundPolygon(points, +radiusrange.value)
-draw()
 
 const animatepoint = (p: Point) => {
   const

@@ -26,12 +26,14 @@ or by script tag (with a link to IIFE module) in your html page:
 
 ## Usage
 
+if you use TypeScript you can also import input type "Point" and output type "RoundedPoint"
+
 ```javascript
-// if you use TypeScript you can also import input type "Point" and output type "RoundedPoint"
 import roundPolygon, { Point, RoundedPoint } from "round-polygon"
 
 let polygonToRound: Point[],
-    roundedPolygon: RoundedPoint[]
+    roundedPolygon: RoundedPoint[],
+    radius: number
 ```
 
 roundPolygon function takes two arguments: an array of initial points and a radius
@@ -45,7 +47,9 @@ polygonToRound = [
   { x: 150, y: 200 },
 ]
 
-roundedPolygon = roundPolygon(polygonToRound, 20)
+radius = 20
+
+roundedPolygon = roundPolygon(polygonToRound, radius)
 ```
 a rounded point is an object with provided properties:
 
@@ -85,6 +89,7 @@ a rounded point is an object with provided properties:
 so the whole approach to draw a rounded shape using, for example, Canvas API looks like this:
 
 ```javascript
+// init
 const
   canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d"),
@@ -95,9 +100,10 @@ const
     { x: 220, y:  20 },
     { x: 170, y: 220 },
   ],
-  roundedPolygon = roundPolygon(polygonToRound, 100)
+  radius = 100,
+  roundedPolygon = roundPolygon(polygonToRound, radius)
 
-// drawing
+// draw
 ctx.beginPath()
 roundedPolygon.forEach((p) => {
   ctx.moveTo(p.in.x, p.in.y)
@@ -107,6 +113,6 @@ roundedPolygon.forEach((p) => {
 ctx.stroke()
 ```
 
-The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point with respect to rounding collisions order.
+The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
 
 ![demo](./public/demo.png)
