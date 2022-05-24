@@ -122,12 +122,13 @@ ctx.stroke()
 
 ### Upcoming v0.6.0
 - performance improvment (clean calculations)
-- add "from" and "to" angles to arc propperty of rounded point object, as well as "length" prop
-- add ability to provide certain radius to round by to each Point
+- handle a case when a point has 0 radians main-angle 
+- add "from" and "to" angles to an arc propperty of a rounded point object, as well as "length" prop
+- add ability to provide a certain radius to round by to each Point
 
 ### Later
 - input and output might be SVG path
-- provide bezier curve estimations as an alernative to arc propperty
+- provide bezier curve estimations as an alernative to an arc propperty
   ```typescript
   {
     in: { ...,
