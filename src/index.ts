@@ -46,7 +46,6 @@ const roundPolygon = (
     calcRound(minHitPoint, radius)
     minHitPoint = getMinHit(preRoundedPoints)
   }
-  preRoundedPoints.sort((a, b) => a.id - b.id)
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] =
