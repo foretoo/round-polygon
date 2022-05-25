@@ -157,15 +157,11 @@ const lockPoint = (curr: Linked<PreRoundedPoint>) => {
 
 const getMinHit = (
   arr: Linked<PreRoundedPoint>[]
-): Linked<PreRoundedPoint> | null => {
-
-  let min: Linked<PreRoundedPoint> | null = null
-  arr.forEach((p) => {
-    if (!p.locked) 
-      min = !min ? p : p.arc.hit < min.arc.hit ? p : min
-  })
-  return min
-}
+) => (
+  arr.reduce((min: Linked<PreRoundedPoint> | null, p) => 
+    p.locked ? min : min ? p.arc.hit < min.arc.hit ? p : min : p,
+    null
+))
 
 
 
