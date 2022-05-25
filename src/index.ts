@@ -96,85 +96,53 @@ const calcRound = (
   curr:   Linked<PreRoundedPoint>,
   radius: number
 ) => {
-
-  const prev = curr.prev
-  const next = curr.next
-  const _prev  = prev.prev
-  const _next  = next.next
-  const _pprev = _prev.prev
-  const _nnext = _next.next
-
   if (radius >= curr.arc.hit) {
-    if (curr.arc.hit === next.arc.hit) {
 
-      curr.arc.radius = curr.arc.hit
-      next.arc.radius = curr.arc.hit
+    const prev = curr.prev,
+          next = curr.next
 
-      calcOffset(curr)
-      calcOffset(next)
-
-      _next.arc.hit = Math.min(
-        _next.out.length / (_next.angle.vel + _nnext.angle.vel),
-        _next.in.rest / _next.angle.vel
+    if (prev.locked && !next.locked)
+      curr.arc.radius = Math.min(
+        curr.in.rest / curr.angle.vel,
+        curr.out.length / (curr.angle.vel + next.angle.vel),
+        curr.arc.radius
       )
-      prev.arc.hit = Math.min(
-        prev.in.length / (prev.angle.vel + _prev.angle.vel),
-        prev.out.rest / prev.angle.vel
+
+    else if (next.locked && !prev.locked)
+      curr.arc.radius = Math.min(
+        curr.out.rest / curr.angle.vel,
+        curr.in.length / (curr.angle.vel + prev.angle.vel),
+        curr.arc.radius
       )
-    }
-    else if (curr.arc.hit === prev.arc.hit) {
 
-      curr.arc.radius = curr.arc.hit
-      prev.arc.radius = curr.arc.hit
-      
-      calcOffset(prev)
-      calcOffset(curr)
-
-      _prev.arc.hit = Math.min(
-        _prev.in.length / (_prev.angle.vel + _pprev.angle.vel),
-        _prev.out.rest / _prev.angle.vel
+    else if (next.locked && prev.locked)
+      curr.arc.radius = Math.min(
+        curr.in.rest / curr.angle.vel,
+        curr.out.rest / curr.angle.vel,
+        curr.arc.radius
       )
-      next.arc.hit = Math.min(
-        next.out.length / (next.angle.vel + _next.angle.vel),
-        next.in.rest / next.angle.vel
-      )
-    }
-    else {
 
-      if (prev.locked && !next.locked) {
-        curr.arc.radius = Math.min(
-          curr.in.rest / curr.angle.vel,
-          curr.out.length / (curr.angle.vel + next.angle.vel),
-          curr.arc.radius
-        )
-      }
-      if (next.locked && !prev.locked) {
-        curr.arc.radius = Math.min(
-          curr.out.rest / curr.angle.vel,
-          curr.in.length / (curr.angle.vel + prev.angle.vel),
-          curr.arc.radius
-        )
-      }
-      if (next.locked && prev.locked) {          
-        curr.arc.radius = Math.min(
-          curr.in.rest / curr.angle.vel,
-          curr.out.rest / curr.angle.vel,
-          curr.arc.radius
-        )
-      }
+    else curr.arc.radius = curr.arc.hit
 
-      calcOffset(curr)
-      
-    }
+    lockPoint(curr)
+    
+    // to get right getMinHit then
+    prev.arc.hit = Math.min(
+      prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
+      prev.out.rest / prev.angle.vel
+    )
+    next.arc.hit = Math.min(
+      next.out.length / (next.angle.vel + next.next.angle.vel),
+      next.in.rest / next.angle.vel
+    )
   }
-  else {
-    calcOffset(curr)
-  }
+
+  else lockPoint(curr)
 }
 
 
 
-const calcOffset = (curr: Linked<PreRoundedPoint>) => {
+const lockPoint = (curr: Linked<PreRoundedPoint>) => {
   curr.offset = curr.arc.radius * curr.angle.vel
 
   curr.prev.out.rest -= curr.offset
