@@ -49,12 +49,13 @@ const roundPolygon = (
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] =
-  preRoundedPoints.map((p, id) => {
+  preRoundedPoints.map((p) => {
 
     const
       bisLength = p.arc.radius / Math.sin(p.angle.main / 2)
 
     return {
+      id: p.id,
       x: p.x,
       y: p.y,
       angle: {
@@ -80,9 +81,8 @@ const roundPolygon = (
         x: p.x + Math.cos(p.angle.next) * p.offset,
         y: p.y + Math.sin(p.angle.next) * p.offset,
       },
-      id,
-      get prev() { return roundedPoints[(id - 1 + points.length) % points.length] },
-      get next() { return roundedPoints[(id + 1) % points.length] },
+      get prev() { return roundedPoints[(p.id - 1 + points.length) % points.length] },
+      get next() { return roundedPoints[(p.id + 1) % points.length] },
     }
   })
 
