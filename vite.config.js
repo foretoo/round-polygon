@@ -14,7 +14,6 @@ export default defineConfig({
       name: "roundPolygon",
       formats: [ "es", "cjs", "iife" ]
     },
-    sourcemap: true,
     target: "esnext",
     outDir: "lib",
     emptyOutDir: false,
