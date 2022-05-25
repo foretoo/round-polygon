@@ -43,7 +43,7 @@ const roundPolygon = (
   // calc valid radius and offset of rounding
   let minHitPoint = getMinHit(preRoundedPoints)
   while (minHitPoint) {
-    calcRound(minHitPoint, preRoundedPoints, radius)
+    calcRound(minHitPoint, radius)
     minHitPoint = getMinHit(preRoundedPoints)
   }
   preRoundedPoints.sort((a, b) => a.id - b.id)
@@ -53,8 +53,7 @@ const roundPolygon = (
   preRoundedPoints.map((p, id) => {
 
     const
-      bisLength = p.arc.radius / Math.sin(p.angle.main / 2),
-      offset = p.arc.radius * p.angle.vel
+      bisLength = p.arc.radius / Math.sin(p.angle.main / 2)
 
     return {
       x: p.x,
@@ -66,7 +65,7 @@ const roundPolygon = (
         bis:  p.angle.bis,
         dir:  p.angle.dir,
       },
-      offset,
+      offset: p.offset,
       arc: {
         radius: p.arc.radius,
         x: p.x + Math.cos(p.angle.bis) * bisLength,
@@ -74,13 +73,13 @@ const roundPolygon = (
       },
       in: {
         length: p.in.length,
-        x: p.x + Math.cos(p.angle.prev) * offset,
-        y: p.y + Math.sin(p.angle.prev) * offset,
+        x: p.x + Math.cos(p.angle.prev) * p.offset,
+        y: p.y + Math.sin(p.angle.prev) * p.offset,
       },
       out: {
         length: p.out.length,
-        x: p.x + Math.cos(p.angle.next) * offset,
-        y: p.y + Math.sin(p.angle.next) * offset,
+        x: p.x + Math.cos(p.angle.next) * p.offset,
+        y: p.y + Math.sin(p.angle.next) * p.offset,
       },
       id,
       get prev() { return roundedPoints[(id - 1 + points.length) % points.length] },
@@ -95,34 +94,24 @@ const roundPolygon = (
 
 const calcRound = (
   curr:   Linked<PreRoundedPoint>,
-  points: Linked<PreRoundedPoint>[],
   radius: number
 ) => {
 
-  const prev = points.find((p) => p.id === (curr.id - 1 + points.length) % points.length)!
-  const next = points.find((p) => p.id === (curr.id + 1) % points.length)!
+  const prev = curr.prev
+  const next = curr.next
+  const _prev  = prev.prev
+  const _next  = next.next
+  const _pprev = _prev.prev
+  const _nnext = _next.next
 
   if (radius >= curr.arc.hit) {
     if (curr.arc.hit === next.arc.hit) {
-      const _prev  = points.find((p) => p.id === (prev.id - 1 + points.length) % points.length)!
-      const _next  = points.find((p) => p.id === (next.id + 1) % points.length)!
-      const _nnext = points.find((p) => p.id === (_next.id + 1) % points.length)!
 
       curr.arc.radius = curr.arc.hit
       next.arc.radius = curr.arc.hit
-      next.locked = true
-      curr.locked = true
 
-      curr.offset = curr.arc.radius * curr.angle.vel
-      next.offset = next.arc.radius * next.angle.vel
-
-      _next.in.rest  -= next.offset
-      next.out.rest -= next.offset
-      next.in.rest  -= next.offset
-      next.in.rest  -= curr.offset
-      curr.out.rest -= curr.offset
-      curr.in.rest  -= curr.offset
-      prev.out.rest -= curr.offset
+      calcOffset(curr)
+      calcOffset(next)
 
       _next.arc.hit = Math.min(
         _next.out.length / (_next.angle.vel + _nnext.angle.vel),
@@ -134,26 +123,12 @@ const calcRound = (
       )
     }
     else if (curr.arc.hit === prev.arc.hit) {
-      const _next  = points.find((p) => p.id === (next.id + 1) % points.length)!
-      const _prev  = points.find((p) => p.id === (prev.id - 1 + points.length) % points.length)!
-      const _pprev = points.find((p) => p.id === (_prev.id - 1 + points.length) % points.length)!
 
       curr.arc.radius = curr.arc.hit
       prev.arc.radius = curr.arc.hit
-      curr.locked = true
-      prev.locked = true
-      // i -= 2
-
-      curr.offset = curr.arc.radius * curr.angle.vel
-      prev.offset = prev.arc.radius * prev.angle.vel
-
-      _prev.out.rest -= prev.offset
-      prev.in.rest  -= prev.offset
-      prev.out.rest -= prev.offset
-      prev.out.rest -= curr.offset
-      curr.in.rest  -= curr.offset
-      curr.out.rest -= curr.offset
-      next.in.rest  -= curr.offset
+      
+      calcOffset(prev)
+      calcOffset(curr)
 
       _prev.arc.hit = Math.min(
         _prev.in.length / (_prev.angle.vel + _pprev.angle.vel),
@@ -188,26 +163,26 @@ const calcRound = (
         )
       }
 
-      curr.offset = curr.arc.radius * curr.angle.vel
-
-      prev.out.rest -= curr.offset
-      curr.in.rest -= curr.offset
-      curr.out.rest -= curr.offset
-      next.in.rest -= curr.offset
-
-      curr.locked = true
+      calcOffset(curr)
+      
     }
   }
   else {
-    curr.offset = curr.arc.radius * curr.angle.vel
-
-    prev.out.rest -= curr.offset
-    curr.in.rest -= curr.offset
-    curr.out.rest -= curr.offset
-    next.in.rest -= curr.offset
-
-    curr.locked = true
+    calcOffset(curr)
   }
+}
+
+
+
+const calcOffset = (curr: Linked<PreRoundedPoint>) => {
+  curr.offset = curr.arc.radius * curr.angle.vel
+
+  curr.prev.out.rest -= curr.offset
+  curr.in.rest -= curr.offset
+  curr.out.rest -= curr.offset
+  curr.next.in.rest -= curr.offset
+
+  curr.locked = true
 }
 
 
