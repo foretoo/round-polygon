@@ -121,10 +121,10 @@ ctx.stroke()
 ## Changelog
 
 ### Upcoming v0.6.0
-- ~~performance improvment (clean calculations)~~
 - handle a case when a point has 0 radians main-angle 
 - add "from" and "to" angles to an arc propperty of a rounded point object, as well as "length" prop
-- add ability to provide a certain radius to round by to each Point
+- ~~performance improvment (clean calculations)~~
+- ~~add ability to provide a certain radius to round by to each Point~~
 
 ### Later
 - input and output might be SVG path
