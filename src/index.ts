@@ -102,6 +102,7 @@ const calcRound = (
 
     if (prev.locked && !next.locked)
       curr.arc.radius = Math.min(
+        curr.arc.max,
         curr.in.rest / curr.angle.vel,
         curr.out.length / (curr.angle.vel + next.angle.vel),
         curr.arc.radius
@@ -109,6 +110,7 @@ const calcRound = (
 
     else if (next.locked && !prev.locked)
       curr.arc.radius = Math.min(
+        curr.arc.max,
         curr.out.rest / curr.angle.vel,
         curr.in.length / (curr.angle.vel + prev.angle.vel),
         curr.arc.radius
@@ -116,6 +118,7 @@ const calcRound = (
 
     else if (next.locked && prev.locked)
       curr.arc.radius = Math.min(
+        curr.arc.max,
         curr.in.rest / curr.angle.vel,
         curr.out.rest / curr.angle.vel,
         curr.arc.radius
@@ -127,10 +130,12 @@ const calcRound = (
     
     // to get right getMinHit then
     prev.arc.hit = Math.min(
+      prev.arc.max,
       prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
       prev.out.rest / prev.angle.vel
     )
     next.arc.hit = Math.min(
+      next.arc.max,
       next.out.length / (next.angle.vel + next.next.angle.vel),
       next.in.rest / next.angle.vel
     )
