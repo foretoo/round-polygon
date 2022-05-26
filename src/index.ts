@@ -1,10 +1,10 @@
-import { Point, Linked, PreRoundedPoint, RoundedPoint } from "./types"
+import { InitPoint, Linked, PreRoundedPoint, RoundedPoint } from "./types"
 import { getLength, getAngles } from "./utils"
 
 
 
 const roundPolygon = (
-  points: Point[], radius: number
+  points: InitPoint[], radius: number = 0
 ): Linked<RoundedPoint>[] => {
 
   // prepare points, calc angles
@@ -22,7 +22,7 @@ const roundPolygon = (
       ...curr,
       angle,
       offset: 0,
-      arc: { radius, hit: radius },
+      arc: { radius, hit: radius, max: curr.r !== undefined ? curr.r : radius },
       in: { length: prev_length, rest: prev_length },
       out: { length: next_length, rest: next_length },
       locked: false,
@@ -35,6 +35,7 @@ const roundPolygon = (
   // calc collision radius for each point
   preRoundedPoints.forEach((p) => {
     p.arc.hit = Math.min(
+      p.arc.max,
       p.out.length / (p.angle.vel + p.next.angle.vel),
       p.in.length  / (p.angle.vel + p.prev.angle.vel),
     )

@@ -1,4 +1,5 @@
 type Point = { x: number, y: number }
+type InitPoint = Point & { r?: number }
 
 type Angles = {
   main: number
@@ -14,7 +15,7 @@ type PreRoundedPoint = Point & {
   angle: Angles
   in:  { length: number, rest: number }
   out: { length: number, rest: number }
-  arc: { radius: number, hit: number }
+  arc: { radius: number, hit: number, max: number }
   locked: boolean
 }
 
@@ -35,7 +36,7 @@ type Linked<T> = T & {
 }
 
 export {
-  type Point,
+  type InitPoint,
   type Linked,
   type PreRoundedPoint,
   type RoundedPoint,
