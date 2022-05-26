@@ -22,7 +22,7 @@ const roundPolygon = (
       ...curr,
       angle,
       offset: 0,
-      arc: { radius, hit: radius, max: curr.r !== undefined ? curr.r : radius },
+      arc: { radius, hit: radius, lim: curr.r !== undefined ? curr.r : radius },
       in: { length: prev_length, rest: prev_length },
       out: { length: next_length, rest: next_length },
       locked: false,
@@ -35,7 +35,7 @@ const roundPolygon = (
   // calc collision radius for each point
   preRoundedPoints.forEach((p) => {
     p.arc.hit = Math.min(
-      p.arc.max,
+      p.arc.lim,
       p.out.length / (p.angle.vel + p.next.angle.vel),
       p.in.length  / (p.angle.vel + p.prev.angle.vel),
     )
@@ -102,7 +102,7 @@ const calcRound = (
 
     if (prev.locked && !next.locked)
       curr.arc.radius = Math.min(
-        curr.arc.max,
+        curr.arc.lim,
         curr.in.rest / curr.angle.vel,
         curr.out.length / (curr.angle.vel + next.angle.vel),
         curr.arc.radius
@@ -110,7 +110,7 @@ const calcRound = (
 
     else if (next.locked && !prev.locked)
       curr.arc.radius = Math.min(
-        curr.arc.max,
+        curr.arc.lim,
         curr.out.rest / curr.angle.vel,
         curr.in.length / (curr.angle.vel + prev.angle.vel),
         curr.arc.radius
@@ -118,7 +118,7 @@ const calcRound = (
 
     else if (next.locked && prev.locked)
       curr.arc.radius = Math.min(
-        curr.arc.max,
+        curr.arc.lim,
         curr.in.rest / curr.angle.vel,
         curr.out.rest / curr.angle.vel,
         curr.arc.radius
@@ -130,12 +130,12 @@ const calcRound = (
     
     // to get right getMinHit then
     prev.arc.hit = Math.min(
-      prev.arc.max,
+      prev.arc.lim,
       prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
       prev.out.rest / prev.angle.vel
     )
     next.arc.hit = Math.min(
-      next.arc.max,
+      next.arc.lim,
       next.out.length / (next.angle.vel + next.next.angle.vel),
       next.in.rest / next.angle.vel
     )
