@@ -5,7 +5,7 @@ import {
 } from "bratik"
 import roundPolygon from ".."
 
-const 
+const
   { ctx, height, width } = getcanvas(),
   pointnum = 6,
   grey = "#0007",
@@ -14,11 +14,10 @@ const
   padding = Math.min(width, height) / 10,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
-  limitradius = 20
-      
+  limitradius = 10
+
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
-font(14)
 
 let points: InitPoint[] = [
       // { x: 157, y: 210 },{ x: 265, y: 202 },{ x: 304, y: 363 },{ x: 100, y: 373 },{ x: 221, y: 501 },
@@ -30,8 +29,10 @@ let points: InitPoint[] = [
     ],
     polygon: Linked<RoundedPoint>[]
 
-for (let i = 0; i < pointnum; i++)
-  points[i] = { x: width/2, y: height/2 }
+for (let i = 0; i < pointnum; i++) {
+  points[i] = getrandpoint()
+  if (i % 2 === 1) points[i].r = limitradius * i
+}
 polygon = roundPolygon(points, +radiusrange.value)
 
 const animatepoint = (p: InitPoint, i: number) => {
@@ -39,7 +40,7 @@ const animatepoint = (p: InitPoint, i: number) => {
     moveX = animate(8000, "cubicInOut"),
     moveY = animate(8000, "cubicInOut"),
     newpoint = getrandpoint()
-    if (i % 2 === 1) points[i].r = limitradius
+    if (i % 2 === 1) points[i].r = limitradius * i
 
   moveX(p, { x: newpoint.x })
   moveY(p, { y: newpoint.y })
@@ -52,6 +53,40 @@ const play = () => {
   draw()
 }
 loop(play)
+
+
+function getrandpoint() {
+  return {
+    x: padding + Math.random() * (width - padding * 2),
+    y: padding + Math.random() * (height - padding * 2),
+  }
+}
+
+
+font(14, "monospace")
+const
+  legendText = `points with own radius — i * ${limitradius}`,
+  legendWidth = Math.ceil(ctx.measureText(legendText).width),
+  legendUnder = "it tries to get its radius if it possible"
+
+function legend() {
+  const
+    y = height - 60,
+    x = (width - legendWidth) / 2 - 20
+
+  fill(null)
+  stroke(highlight, 2)
+  circle(x, y, 10)
+
+  stroke(null)
+  fill("black")
+  font(14, "monospace")
+  settext("left", "middle")
+  text(legendText, x + 20, y)
+  fill(grey)
+  font(12, "monospace")
+  text(legendUnder, x + 20, y + 20)
+}
 
 
 radiusvalue.textContent = radiusrange.value
@@ -105,6 +140,7 @@ function draw() {
     //// Points numbers
     stroke(null)
     fill(grey)
+    font(14, "monospace")
     settext("center", "middle")
     const { bis } = p.angle,
           x = p.x - Math.cos(bis) * 24,
@@ -116,28 +152,4 @@ function draw() {
       circle(x, y, 10)
     }
   })
-}
-
-
-function getrandpoint() {
-  return {
-    x: padding + Math.random() * (width - padding * 2),
-    y: padding + Math.random() * (height - padding * 2),
-  }
-}
-
-
-const legendContent = `points with own radius (max radius) ${limitradius}`
-const legendWidth = Math.ceil(ctx.measureText(legendContent).width)
-function legend() {
-  const y = height - 40, x = (width - legendWidth) / 2 - 20
-
-  fill(null)
-  stroke(highlight, 2)
-  circle(x, y, 10)
-
-  stroke(null)
-  fill(grey)
-  settext("left", "middle")
-  text(legendContent, x + 20, y)
 }
