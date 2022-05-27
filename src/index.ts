@@ -106,7 +106,60 @@ const calcLimit = (
 ) => {
 
   const prev = curr.prev,
-        next = curr.next
+        next = curr.next,
+        lim = curr.arc.lim!
+
+  // if prev locked
+  if (prev.locked && !next.locked)
+    curr.arc.radius = next.arc.lim !== undefined
+    ? Math.min(curr.in.rest / curr.angle.vel, lim, curr.out.length / (curr.angle.vel + next.angle.vel))
+    : Math.min(curr.in.rest / curr.angle.vel, lim)
+
+  // if next locked
+  else if (next.locked && !prev.locked)
+    curr.arc.radius = prev.arc.lim !== undefined
+    ? Math.min(curr.out.rest / curr.angle.vel, lim, curr.in.length / (curr.angle.vel + prev.angle.vel))
+    : Math.min(curr.out.rest / curr.angle.vel, lim)
+
+  // if BOTH locked
+  else if (next.locked && prev.locked)
+    curr.arc.radius =
+      Math.min(curr.in.rest / curr.angle.vel, curr.out.rest / curr.angle.vel, lim)
+
+  // if NONE locked
+  else {
+    // if prev has limit
+    if (prev.arc.lim !== undefined && next.arc.lim === undefined)
+      curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), lim)
+
+    // if next has limit
+    else if (next.arc.lim !== undefined && prev.arc.lim === undefined)
+      curr.arc.radius = Math.min(curr.out.length / (curr.angle.vel + next.angle.vel), lim)
+
+    // if BOTH have limit
+    else if (next.arc.lim !== undefined && prev.arc.lim !== undefined) {
+      
+      const
+        currOffset = curr.angle.vel * lim,
+        prevOffset = prev.angle.vel * prev.arc.lim,
+        nextOffset = next.angle.vel * next.arc.lim,
+        prevRest = curr.in.length  - (prevOffset + currOffset),
+        nextRest = curr.out.length - (nextOffset + currOffset)
+
+      if (prevRest >= 0 && nextRest >= 0)
+        curr.arc.radius = lim
+      else if (prevRest < 0 && nextRest >= 0)
+        curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), lim)
+      else if (nextRest < 0 && prevRest >= 0)
+        curr.arc.radius = Math.min(curr.out.length / (curr.angle.vel + next.angle.vel), lim)
+      else
+        curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), curr.out.length / (curr.angle.vel + next.angle.vel), lim)
+    }
+
+    // if NONE have limit
+    else
+      curr.arc.radius = Math.min(curr.in.length / curr.angle.vel, curr.out.length / curr.angle.vel, lim)
+  }
 
   lockPoint(curr)
   
