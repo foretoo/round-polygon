@@ -6,15 +6,16 @@ import {
 import roundPolygon from ".."
 
 const
-  { ctx, height, width } = getcanvas(),
+  { canvas, ctx, height, width } = getcanvas(),
   pointnum = 6,
   grey = "#0007",
   skin = "#f407",
   highlight = "#e02",
   padding = Math.min(width, height) / 10,
+  control = document.querySelector("label")!,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
-  limitradius = 10
+  limradius = 10
 
 ctx.lineCap = "round"
 ctx.lineJoin = "round"
@@ -31,16 +32,16 @@ let points: InitPoint[] = [
 
 for (let i = 0; i < pointnum; i++) {
   points[i] = getrandpoint()
-  if (i % 2 === 1) points[i].r = limitradius * i
+  points[i].r = limradius * (i + 1)
 }
-polygon = roundPolygon(points, +radiusrange.value)
+// polygon = roundPolygon(points, +radiusrange.value)
 
 const animatepoint = (p: InitPoint, i: number) => {
   const
     moveX = animate(8000, "cubicInOut"),
     moveY = animate(8000, "cubicInOut"),
     newpoint = getrandpoint()
-    if (i % 2 === 1) points[i].r = limitradius * i
+    points[i].r = limradius * (i + 1)
 
   moveX(p, { x: newpoint.x })
   moveY(p, { y: newpoint.y })
@@ -63,44 +64,93 @@ function getrandpoint() {
 }
 
 
-font(14, "monospace")
-const
-  legendText = `points with own radius — i * ${limitradius}`,
-  legendWidth = Math.ceil(ctx.measureText(legendText).width),
-  legendUnder = "it tries to get its radius if it possible"
+// let activePoint: InitPoint | undefined,
+//     grabbingPoint: InitPoint | undefined,
+//     searchPoint: InitPoint | undefined,
+//     activeid: number,
+//     searchid: number,
+//     px: number,
+//     py: number
 
-function legend() {
-  const
-    y = height - 60,
-    x = (width - legendWidth) / 2 - 20
+// canvas.onpointermove = (e: PointerEvent) => {
 
-  fill(null)
-  stroke(highlight, 2)
-  circle(x, y, 10)
+//   px = e.offsetX
+//   py = e.offsetY
 
-  stroke(null)
-  fill("black")
-  font(14, "monospace")
-  settext("left", "middle")
-  text(legendText, x + 20, y)
-  fill(grey)
-  font(12, "monospace")
-  text(legendUnder, x + 20, y + 20)
-}
+//   searchid = points.findIndex((p) => (
+//     p.x - 10 <= px && px <= p.x + 10 &&
+//     p.y - 10 <= py && py <= p.y + 10
+//   ))
+//   searchPoint = points[searchid]
+
+//   if (searchPoint && !canvas.classList.contains("add")) canvas.classList.add("grab")
+//   else canvas.classList.remove("grab")
+  
+//   if (grabbingPoint) {
+//     grabbingPoint.x = px
+//     grabbingPoint.y = py
+//     polygon = roundPolygon(points)
+//   }
+// }
+// canvas.onpointerdown = (e: PointerEvent) => {
+//   e.preventDefault()
+
+//   grabbingPoint = activePoint = searchPoint
+//   if (grabbingPoint) canvas.classList.add("grabbing")
+//   if (activePoint) {
+//     activeid = searchid
+//     control.classList.remove("hidden")
+//     radiusrange.value = points[searchid].r!.toString()
+//     radiusvalue.textContent = printradius()
+//   }
+//   else {
+//     control.classList.add("hidden")
+//   }
+// }
+// canvas.onpointerup = () => {
+//   grabbingPoint = undefined
+//   canvas.classList.remove("grabbing")
+// }
 
 
-radiusvalue.textContent = radiusrange.value
-radiusrange.oninput = (e: Event) => {
-  const target = e.target as HTMLInputElement
-  radiusvalue.textContent = target.value
-  polygon = roundPolygon(points, +radiusrange.value)
-  draw()
-}
+// font(14, "monospace")
+// const
+//   legendText = `points with own radius — i * ${limitradius}`,
+//   legendWidth = Math.ceil(ctx.measureText(legendText).width),
+//   legendUnder = "it tries to get its radius if it possible"
+
+// function legend() {
+//   const
+//     y = height - 60,
+//     x = (width - legendWidth) / 2 - 20
+
+//   fill(null)
+//   stroke(highlight, 2)
+//   circle(x, y, 10)
+
+//   stroke(null)
+//   fill("black")
+//   font(14, "monospace")
+//   settext("left", "middle")
+//   text(legendText, x + 20, y)
+//   fill(grey)
+//   font(12, "monospace")
+//   text(legendUnder, x + 20, y + 20)
+// }
+
+
+// radiusrange.oninput = (e: Event) => {
+//   const target = e.target as HTMLInputElement
+//   radiusvalue.textContent = printradius()
+//   points[activeid].r = +target.value  
+//   polygon = roundPolygon(points)
+// }
+// const printradius = () =>  `point[${activeid}] radius = ${radiusrange.value}`
 
 
 function draw() {
   clear()
-  legend()
+  // legend()
 
   stroke(grey, 0.5)
   fill(null)
@@ -146,10 +196,16 @@ function draw() {
           x = p.x - Math.cos(bis) * 24,
           y = p.y - Math.sin(bis) * 24
     text(`${i}`, x, y)
-    if (i % 2 === 1) {
-      fill(null)
-      stroke(highlight, 2)
-      circle(x, y, 10)
-    }
   })
+
+  // if (searchPoint) {
+  //   fill(highlight)
+  //   stroke(null)
+  //   circle(searchPoint.x, searchPoint.y, 6)
+  // }
+  // if (activePoint) {
+  //   fill(highlight)
+  //   stroke(skin, 8)
+  //   circle(activePoint.x, activePoint.y, 6)
+  // }
 }

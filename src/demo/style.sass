@@ -18,6 +18,12 @@ body
 
 canvas
   display: block
+  &.grab
+    cursor: pointer
+  &.grabbing
+    cursor: grabbing
+    + label
+       pointer-events: none
 
 label, p
   position: absolute
@@ -25,19 +31,14 @@ label, p
   line-height: 1em
 
 label
-  width: 100%
+  width: 50%
   top: 2rem
-  display: flex
-  justify-content: center
-  gap: 1rem
-
-  input
-    width: 50%
+  display: grid
+  gap: 0.5rem
+  &.hidden
+    display: none
   span
-    width: calc(25% - 1rem)
     font-size: inherit
-    &:first-child
-      text-align: right
 
 p
   bottom: 2rem
