@@ -15,7 +15,7 @@ type PreRoundedPoint = Point & {
   angle: Angles
   in:  { length: number, rest: number }
   out: { length: number, rest: number }
-  arc: { radius: number, hit: number, lim?: number }
+  arc: { radius: number, hit: number, lim: number }
   locked: boolean
 }
 
