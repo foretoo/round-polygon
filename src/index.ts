@@ -14,26 +14,25 @@ const roundPolygon = (
     const
       prev = points[(id - 1 + points.length) % points.length],
       next = points[(id + 1) % points.length],
-      next_length = getLength(curr, next),
-      prev_length = getLength(prev, curr),
+      nextLength = getLength(curr, next),
+      prevLength = getLength(prev, curr),
       angle = getAngles(prev, curr, next),
-      lim = (curr.r !== undefined)
-        ? Math.min(next_length / angle.vel, prev_length / angle.vel, curr.r)
-        : undefined
+      lim = curr.r !== undefined ? Math.min(nextLength / angle.vel, prevLength / angle.vel, curr.r) : 0
 
     return {
       ...curr,
       angle,
       offset: 0,
       arc: { radius, hit: radius, lim },
-      in: { length: prev_length, rest: prev_length },
-      out: { length: next_length, rest: next_length },
+      in: { length: prevLength, rest: prevLength },
+      out: { length: nextLength, rest: nextLength },
       locked: false,
       id,
       get prev() { return preRoundedPoints[(id - 1 + points.length) % points.length] },
       get next() { return preRoundedPoints[(id + 1) % points.length] },
     }
   })
+
 
   // calc collision radius for each point
   preRoundedPoints.forEach((p) => {
@@ -43,20 +42,28 @@ const roundPolygon = (
     )
   })
 
-  // calc limit radius and its offset
-  let limPoint = getMinLim(preRoundedPoints)
-  while (limPoint) {
-    calcLimit(limPoint)
-    limPoint = getMinLim(preRoundedPoints)
+
+  // calc limit radius and its offsets
+  const preRoundedLimPoints = preRoundedPoints.filter((p) => p.arc.lim > 0)
+  if (preRoundedLimPoints.length) {
+    let minLimPoint = getMinLim(preRoundedLimPoints)
+    while (minLimPoint) {
+      calcLimit(minLimPoint)
+      minLimPoint = getMinLim(preRoundedLimPoints)
+    }
   }
   
 
-  // calc valid radius and offset of rounding
-  let minHitPoint = getMinHit(preRoundedPoints)
-  while (minHitPoint) {
-    calcRound(minHitPoint, radius)
-    minHitPoint = getMinHit(preRoundedPoints)
+  // calc common radius and its offsets
+  const preRoundedZeroLimPoints = preRoundedPoints.filter((p) => p.arc.lim === 0)
+  if (preRoundedZeroLimPoints.length && radius > 0) {
+    let minHitPoint = getMinHit(preRoundedPoints)
+    while (minHitPoint) {
+      calcRound(minHitPoint, radius)
+      minHitPoint = getMinHit(preRoundedPoints)
+    }
   }
+
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] = 
@@ -102,76 +109,56 @@ const roundPolygon = (
 
 
 const calcLimit = (
-  curr:   Linked<PreRoundedPoint>,
+  curr: Linked<PreRoundedPoint>,
 ) => {
 
-  const prev = curr.prev,
-        next = curr.next,
-        lim = curr.arc.lim!
+  const { prev, next } = curr
 
   // if prev locked
   if (prev.locked && !next.locked)
-    curr.arc.radius = next.arc.lim !== undefined
-    ? Math.min(curr.in.rest / curr.angle.vel, lim, curr.out.length / (curr.angle.vel + next.angle.vel))
-    : Math.min(curr.in.rest / curr.angle.vel, lim)
+    curr.arc.radius = Math.min(
+      Math.max(
+        (curr.out.length - (next.arc.lim * next.angle.vel)) / curr.angle.vel,
+        curr.out.length / (curr.angle.vel + next.angle.vel)
+      ),
+      curr.in.rest / curr.angle.vel,
+      curr.arc.lim
+    )
 
   // if next locked
   else if (next.locked && !prev.locked)
-    curr.arc.radius = prev.arc.lim !== undefined
-    ? Math.min(curr.out.rest / curr.angle.vel, lim, curr.in.length / (curr.angle.vel + prev.angle.vel))
-    : Math.min(curr.out.rest / curr.angle.vel, lim)
+    curr.arc.radius = Math.min(
+      Math.max(
+        (curr.in.length - (prev.arc.lim * prev.angle.vel)) / curr.angle.vel,
+        curr.in.length / (curr.angle.vel + prev.angle.vel)
+      ),
+      curr.out.rest / curr.angle.vel,
+      curr.arc.lim
+    )
 
   // if BOTH locked
   else if (next.locked && prev.locked)
-    curr.arc.radius =
-      Math.min(curr.in.rest / curr.angle.vel, curr.out.rest / curr.angle.vel, lim)
+    curr.arc.radius = Math.min(
+      curr.in.rest / curr.angle.vel,
+      curr.out.rest / curr.angle.vel,
+      curr.arc.lim
+    )
 
   // if NONE locked
-  else {
-    // if prev has limit
-    if (prev.arc.lim !== undefined && next.arc.lim === undefined)
-      curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), lim)
-
-    // if next has limit
-    else if (next.arc.lim !== undefined && prev.arc.lim === undefined)
-      curr.arc.radius = Math.min(curr.out.length / (curr.angle.vel + next.angle.vel), lim)
-
-    // if BOTH have limit
-    else if (next.arc.lim !== undefined && prev.arc.lim !== undefined) {
-      
-      const
-        currOffset = curr.angle.vel * lim,
-        prevOffset = prev.angle.vel * prev.arc.lim,
-        nextOffset = next.angle.vel * next.arc.lim,
-        prevRest = curr.in.length  - (prevOffset + currOffset),
-        nextRest = curr.out.length - (nextOffset + currOffset)
-
-      if (prevRest >= 0 && nextRest >= 0)
-        curr.arc.radius = lim
-      else if (prevRest < 0 && nextRest >= 0)
-        curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), lim)
-      else if (nextRest < 0 && prevRest >= 0)
-        curr.arc.radius = Math.min(curr.out.length / (curr.angle.vel + next.angle.vel), lim)
-      else
-        curr.arc.radius = Math.min(curr.in.length / (curr.angle.vel + prev.angle.vel), curr.out.length / (curr.angle.vel + next.angle.vel), lim)
-    }
-
-    // if NONE have limit
-    else
-      curr.arc.radius = Math.min(curr.in.length / curr.angle.vel, curr.out.length / curr.angle.vel, lim)
-  }
+  else
+    curr.arc.radius = Math.min(
+      Math.max(
+        (curr.in.length - (prev.arc.lim * prev.angle.vel)) / curr.angle.vel,
+        curr.in.length / (curr.angle.vel + prev.angle.vel)
+      ),
+      Math.max(
+        (curr.out.length - (next.arc.lim * next.angle.vel)) / curr.angle.vel,
+        curr.out.length / (curr.angle.vel + next.angle.vel)
+      ),
+      curr.arc.lim
+    )
 
   lockPoint(curr)
-  
-  // to get right getMinHit then
-  prev.arc.hit = Math.min(
-    prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
-    prev.out.rest / prev.angle.vel
-  )
-  next.arc.hit = Math.min(
-    next.out.length / (next.angle.vel + next.next.angle.vel),
-    next.in.rest / next.angle.vel
-  )
 }
 
 
@@ -180,10 +167,9 @@ const calcRound = (
   curr:   Linked<PreRoundedPoint>,
   radius: number
 ) => {
-  if (radius >= curr.arc.hit) {
+  if (radius > curr.arc.hit) {
 
-    const prev = curr.prev,
-          next = curr.next
+    const { prev, next } = curr
 
     // Math.max(..., 0) cased by somehow getting rest = -2.71e-15 from calcLimit
     if (prev.locked && !next.locked)
@@ -209,18 +195,7 @@ const calcRound = (
 
     else curr.arc.radius = curr.arc.hit
 
-
     lockPoint(curr)
-    
-    // to get right getMinHit then
-    prev.arc.hit = Math.min(
-      prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
-      prev.out.rest / prev.angle.vel
-    )
-    next.arc.hit = Math.min(
-      next.out.length / (next.angle.vel + next.next.angle.vel),
-      next.in.rest / next.angle.vel
-    )
   }
 
   else lockPoint(curr)
@@ -229,14 +204,26 @@ const calcRound = (
 
 
 const lockPoint = (curr: Linked<PreRoundedPoint>) => {
+  const { prev, next } = curr
+
   curr.offset = curr.arc.radius * curr.angle.vel
 
-  curr.prev.out.rest -= curr.offset
-  curr.in.rest -= curr.offset
+  prev.out.rest -= curr.offset
+  curr.in.rest  -= curr.offset
   curr.out.rest -= curr.offset
-  curr.next.in.rest -= curr.offset
+  next.in.rest  -= curr.offset
 
   curr.locked = true
+
+  // to get right getMinHit then
+  prev.arc.hit = Math.min(
+    prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
+    prev.out.rest / prev.angle.vel
+  )
+  next.arc.hit = Math.min(
+    next.out.length / (next.angle.vel + next.next.angle.vel),
+    next.in.rest / next.angle.vel
+  )
 }
 
 
@@ -245,13 +232,9 @@ const getMinLim = (
   arr: Linked<PreRoundedPoint>[]
 ) => (
   arr.reduce((min: Linked<PreRoundedPoint> | null, p) =>
-    p.locked ? min
-    : p.arc.lim === undefined ? min
-      : !min ? p
-        : p.arc.lim < min.arc.lim! ? p : min,
+    p.locked ? min : !min ? p : p.arc.lim < min.arc.lim ? p : min,
     null
 ))
-
 
 const getMinHit = (
   arr: Linked<PreRoundedPoint>[]
