@@ -46,10 +46,10 @@ const roundPolygon = (
   // calc limit radius and its offsets
   const preRoundedLimPoints = preRoundedPoints.filter((p) => p.arc.lim > 0)
   if (preRoundedLimPoints.length) {
-    let minLimPoint = getMinLim(preRoundedLimPoints)
+    let minLimPoint = getMinHit(preRoundedLimPoints)
     while (minLimPoint) {
       calcLimit(minLimPoint)
-      minLimPoint = getMinLim(preRoundedLimPoints)
+      minLimPoint = getMinHit(preRoundedLimPoints)
     }
   }
   
@@ -227,14 +227,6 @@ const lockPoint = (curr: Linked<PreRoundedPoint>) => {
 }
 
 
-
-const getMinLim = (
-  arr: Linked<PreRoundedPoint>[]
-) => (
-  arr.reduce((min: Linked<PreRoundedPoint> | null, p) =>
-    p.locked ? min : !min ? p : p.arc.lim < min.arc.lim ? p : min,
-    null
-))
 
 const getMinHit = (
   arr: Linked<PreRoundedPoint>[]
