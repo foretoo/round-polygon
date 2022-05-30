@@ -1,4 +1,4 @@
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate } from "https://unpkg.com/bratik@0.3.7/dist/bratik.es.js"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate } from "https://unpkg.com/bratik@latest/dist/bratik.es.js"
 import roundPolygon from "../lib/round-polygon.es.js"
 
 const
