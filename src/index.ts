@@ -63,7 +63,7 @@ const roundPolygon = (
       minHitPoint = getMinHit(preRoundedPoints)
     }
   }
-
+  
 
   // final calc coordinates
   const roundedPoints: Linked<RoundedPoint>[] = 
@@ -218,10 +218,12 @@ const lockPoint = (curr: Linked<PreRoundedPoint>) => {
   // to get right getMinHit then
   prev.arc.hit = Math.min(
     prev.in.length / (prev.angle.vel + prev.prev.angle.vel),
+    prev.in.rest / prev.angle.vel,
     prev.out.rest / prev.angle.vel
   )
   next.arc.hit = Math.min(
     next.out.length / (next.angle.vel + next.next.angle.vel),
+    next.out.rest / next.angle.vel,
     next.in.rest / next.angle.vel
   )
 }
