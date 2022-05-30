@@ -31,16 +31,18 @@ or by script tag (with a link to IIFE module) in your html page:
 
 ## Usage
 
+### Types
 if you use TypeScript you can also import input type "Point" and output type "RoundedPoint"
 
 ```javascript
-import roundPolygon, { Point, RoundedPoint } from "round-polygon"
+import roundPolygon, { InitPoint, RoundedPoint } from "round-polygon"
 
-let polygonToRound: Point[],
+let polygonToRound: InitPoint[],
     roundedPolygon: RoundedPoint[],
     radius: number
 ```
 
+### Input
 roundPolygon function takes two arguments: an array of initial points and a radius
 
 ```javascript
@@ -56,6 +58,11 @@ radius = 20
 
 roundedPolygon = roundPolygon(polygonToRound, radius)
 ```
+To set a certain radius for a certain point, just add "r" property to the initial point. The radius passed as the argument to the function won't affect these points. Keep in mind that the algorithm rounds these points with higher priority.
+```javascript
+{ x: 100, y: 0, r: 50 }
+```
+### Output
 a rounded point is an object with provided properties:
 
 ```javascript
@@ -90,7 +97,7 @@ a rounded point is an object with provided properties:
   next: {...} // a getter, returns next-indexed rounded point
 }
 ```
-
+### Summary
 so the whole approach to draw a rounded shape using, for example, Canvas API looks like this:
 
 ```javascript
@@ -99,13 +106,13 @@ const
   canvas = document.querySelector("canvas"),
   ctx = canvas.getContext("2d"),
   polygonToRound = [
-    { x: 120, y:  20 },
-    { x:  20, y: 170 },
-    { x: 220, y: 170 },
-    { x: 220, y:  20 },
-    { x: 170, y: 220 },
+    { x: 100, y:   0, r: 60 },
+    { x:   0, y: 150 },
+    { x: 200, y: 150, r: 60 },
+    { x: 200, y:   0 },
+    { x: 150, y: 200 },
   ],
-  radius = 100,
+  radius = 1000,
   roundedPolygon = roundPolygon(polygonToRound, radius)
 
 // draw
@@ -120,13 +127,17 @@ ctx.stroke()
 
 ## Changelog
 
-### Upcoming v0.6.0
-- add ability to provide a certain radius to round by to each Point
+### v0.6.0
+- added ability to provide a certain radius to a certain Point
+- some bugs fixed
+### v0.5.9
+- performance improvement (clean code)
+### v0.5.1
+- first stable version
+
+### Upcoming
 - handle a case when a point has 0 radians main-angle 
 - add "from" and "to" angles to an arc propperty of a rounded point object, as well as "length" prop
-- ~~performance improvment (clean calculations)~~
-
-### Later
 - input and output might be SVG path
 - provide bezier curve estimations as an alernative to an arc propperty
   ```typescript

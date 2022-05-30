@@ -1,6 +1,6 @@
 {
   "name": "round-polygon",
-  "version": "0.5.9",
+  "version": "0.6.0",
   "description": "Small, typed, dependency free tool to round corners of 2d-polygon provided by an array of { x, y } points.",
   "keywords": [ "2d", "tool", "library", "geometry", "round", "arc", "circle", "polygon", "shape", "corner" ],
   "author": "Sergey Borovikov",
@@ -26,7 +26,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
-    "bratik": "^0.3.7",
+    "bratik": "^0.4.0",
     "eslint": "^8.16.0",
     "eslint-plugin-import": "^2.26.0",
     "sass": "^1.52.0",
