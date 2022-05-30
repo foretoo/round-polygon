@@ -1,11 +1,11 @@
-import { Point } from "./types"
+import { InitPoint } from "./types"
 
 export const getLength = (
-  A: Point, B: Point,
+  A: InitPoint, B: InitPoint,
 ) => Math.sqrt(Math.pow(B.x - A.x, 2) + Math.pow(B.y - A.y, 2))
 
 export const getAngle = (
-  A: Point, B: Point, C?: Point,
+  A: InitPoint, B: InitPoint, C?: InitPoint,
 ) => {
   if (!C)
     return Math.atan2(B.y - A.y, B.x - A.x)
@@ -32,9 +32,9 @@ export const getClockDir = (
 }
 
 export const getAngles = (
-  prev_point: Point,
-  curr_point: Point,
-  next_point: Point,
+  prev_point: InitPoint,
+  curr_point: InitPoint,
+  next_point: InitPoint,
 ) => {
   const
     main = getAngle(prev_point, curr_point, next_point),
