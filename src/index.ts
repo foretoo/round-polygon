@@ -48,7 +48,7 @@ const roundPolygon = (
   if (preRoundedLimPoints.length) {
     let minLimPoint = getMinHit(preRoundedLimPoints)
     while (minLimPoint) {
-      calcLimit(minLimPoint)
+      calcLimitRadius(minLimPoint)
       minLimPoint = getMinHit(preRoundedLimPoints)
     }
   }
@@ -59,7 +59,7 @@ const roundPolygon = (
   if (preRoundedZeroLimPoints.length && radius > 0) {
     let minHitPoint = getMinHit(preRoundedPoints)
     while (minHitPoint) {
-      calcRound(minHitPoint, radius)
+      calcCommonRadius(minHitPoint, radius)
       minHitPoint = getMinHit(preRoundedPoints)
     }
   }
@@ -108,7 +108,7 @@ const roundPolygon = (
 
 
 
-const calcLimit = (
+const calcLimitRadius = (
   curr: Linked<PreRoundedPoint>,
 ) => {
 
@@ -163,12 +163,12 @@ const calcLimit = (
 
 
 
-const calcRound = (
+const calcCommonRadius = (
   curr:   Linked<PreRoundedPoint>,
   radius: number
 ) => {
+  
   if (radius > curr.arc.hit) {
-
     const { prev, next } = curr
 
     // Math.max(..., 0) cased by somehow getting rest = -2.71e-15 from calcLimit
@@ -194,11 +194,9 @@ const calcRound = (
       ), 0)
 
     else curr.arc.radius = curr.arc.hit
-
-    lockPoint(curr)
   }
 
-  else lockPoint(curr)
+  lockPoint(curr)
 }
 
 
