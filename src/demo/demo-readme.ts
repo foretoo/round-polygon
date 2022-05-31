@@ -1,10 +1,10 @@
 import "./style.sass"
-import { Linked, InitPoint, RoundedPoint } from "../types"
+import { InitPoint } from "../types"
 import { getcanvas, shape, vertex, arc, CLOSE, fill, stroke, text, font, settext, circle, rect } from "bratik"
 import roundPolygon from ".."
 
 const
-  { canvas, ctx, height, width } = getcanvas(960, 280),
+  { height, width } = getcanvas(960, 280),
   grey = "#000d",
   skin = "#04f7",
   highlight = "#02e",
@@ -41,14 +41,18 @@ for (let i = 0; i < 4; i++) {
   stroke(highlight, 2)
   shape()
   polygon.forEach((p) => {
-    vertex(p.in.x + ox, p.in.y + oy);
-    arc(p.x + ox, p.y + oy, p.next.x + ox, p.next.y + oy, p.arc.radius);
+    vertex(p.in.x + ox, p.in.y + oy)
+    arc(p.x + ox, p.y + oy, p.next.x + ox, p.next.y + oy, p.arc.radius)
   })
   shape(CLOSE)
 
   stroke(null)
   fill(grey)
-  text(`radius=${Math.round(radius)}`, (i === 1 || i === 2) ? 100 + ox : 60 + ox, 210)
+  text(
+    `radius=${Math.round(radius)}`,
+    (i === 1 || i === 2) ? 100 + ox : 60 + ox,
+    210
+  )
 
   if (i === 3) {
     fill(null)
@@ -65,7 +69,7 @@ for (let i = 0; i < 4; i++) {
         text(
           `r=${p.arc.radius}`,
           p.x + ox - Math.cos(p.angle.bis) * 15,
-          p.y + oy + 20 * (p.id === 0 ? -1 : 1)
+          p.y + oy + 20 * (!p.id ? -1 : 1)
         )
       }
     })

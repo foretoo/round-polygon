@@ -1,5 +1,5 @@
 import "./style.sass"
-import { Linked, InitPoint, RoundedPoint } from "../types"
+import { InitPoint, RoundedPoint } from "../types"
 import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate, pxratio } from "bratik"
 import roundPolygon from ".."
 
@@ -15,7 +15,7 @@ const
   limradius = 10
 
 let points: InitPoint[] = [],
-    polygon: Linked<RoundedPoint>[]
+    polygon: RoundedPoint[]
 
 
 

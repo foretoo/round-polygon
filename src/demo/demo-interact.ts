@@ -1,5 +1,5 @@
 import "./style.sass"
-import { Linked, InitPoint, RoundedPoint } from "../types"
+import { InitPoint, RoundedPoint } from "../types"
 import {
   getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate
 } from "bratik"
@@ -25,7 +25,7 @@ let points: InitPoint[] = [
       // { x: 165, y: 502 },{ x: 345, y: 417 },{ x: 351, y: 277 },{ x: 238, y: 261 },{ x: 214, y: 65 },
       { x: 265, y: 396 },{ x: 239, y: 204 },{ x: 132, y: 435 },{ x: 309, y: 543 },{ x: 412, y: 163 },
     ],
-    polygon: Linked<RoundedPoint>[]
+    polygon: RoundedPoint[]
 
 for (let i = 0; i < points.length; i++) {
   points[i].r = limradius * (i + 1)
