@@ -32,7 +32,7 @@ or by script tag (with a link to IIFE module) in your html page:
 ## Usage
 
 ### Types
-if you use TypeScript you can also import input type "Point" and output type "RoundedPoint"
+if you use TypeScript you can also import input type "InitPoint" and output type "RoundedPoint"
 
 ```javascript
 import roundPolygon, { InitPoint, RoundedPoint } from "round-polygon"
