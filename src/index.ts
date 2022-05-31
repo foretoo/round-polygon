@@ -1,14 +1,14 @@
-import { InitPoint, Linked, PreRoundedPoint, RoundedPoint } from "./types"
+import { InitPoint, PreRoundedPoint, RoundedPoint } from "./types"
 import { getLength, getAngles } from "./utils"
 
 
 
 const roundPolygon = (
   points: InitPoint[], radius: number = 0
-): Linked<RoundedPoint>[] => {
+): RoundedPoint[] => {
 
   // prepare points, calc angles
-  const preRoundedPoints: Linked<PreRoundedPoint>[] =
+  const preRoundedPoints: PreRoundedPoint[] =
   points.map((curr, id) => {
     
     const
@@ -66,7 +66,7 @@ const roundPolygon = (
   
 
   // final calc coordinates
-  const roundedPoints: Linked<RoundedPoint>[] = 
+  const roundedPoints: RoundedPoint[] = 
   preRoundedPoints.map((p) => {
 
     const bisLength = p.arc.radius / Math.sin(p.angle.main / 2)
@@ -109,7 +109,7 @@ const roundPolygon = (
 
 
 const calcLimitRadius = (
-  curr: Linked<PreRoundedPoint>,
+  curr: PreRoundedPoint,
 ) => {
 
   const { prev, next } = curr
@@ -164,7 +164,7 @@ const calcLimitRadius = (
 
 
 const calcCommonRadius = (
-  curr:   Linked<PreRoundedPoint>,
+  curr:   PreRoundedPoint,
   radius: number
 ) => {
   
@@ -201,7 +201,7 @@ const calcCommonRadius = (
 
 
 
-const lockPoint = (curr: Linked<PreRoundedPoint>) => {
+const lockPoint = (curr: PreRoundedPoint) => {
   const { prev, next } = curr
 
   curr.offset = curr.arc.radius * curr.angle.vel
@@ -229,9 +229,9 @@ const lockPoint = (curr: Linked<PreRoundedPoint>) => {
 
 
 const getMinHit = (
-  arr: Linked<PreRoundedPoint>[]
+  arr: PreRoundedPoint[]
 ) => (
-  arr.reduce((min: Linked<PreRoundedPoint> | null, p) => 
+  arr.reduce((min: PreRoundedPoint | null, p) => 
     p.locked ? min : !min ? p : p.arc.hit < min.arc.hit ? p : min,
     null
 ))
