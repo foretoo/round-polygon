@@ -33,7 +33,8 @@ const animatepoint = (p: InitPoint, i: number) => {
 
 for (let i = 0; i < pointnum; i++) {
   points[i] = getrandpoint()
-  if (i % 2 !== 0) points[i].r = limradius * i
+  if (!i) points[i].r = 0
+  else if (i % 2 !== 0) points[i].r = limradius * i
 }
 points.forEach(animatepoint)
 

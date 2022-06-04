@@ -7,9 +7,14 @@ const roundPolygon = (
   points: InitPoint[], radius: number = 0
 ): RoundedPoint[] => {
 
+  const
+    preRoundedPoints: PreRoundedPoint[] = [],
+    preRoundedLimPoints: PreRoundedPoint[] = [],
+    preRoundedZeroLimPoints: PreRoundedPoint[] = [],
+    preRoundedNoneLimPoints: PreRoundedPoint[] = []
+
   // prepare points, calc angles
-  const preRoundedPoints: PreRoundedPoint[] =
-  points.map((curr, id) => {
+  points.forEach((curr, id) => {
     
     const
       prev = points[(id - 1 + points.length) % points.length],
@@ -19,7 +24,7 @@ const roundPolygon = (
       angle = getAngles(prev, curr, next),
       lim = curr.r !== undefined ? Math.min(nextLength / angle.vel, prevLength / angle.vel, curr.r) : 0
 
-    return {
+      const preRoundedPoint = {
       ...curr,
       angle,
       offset: 0,
@@ -31,6 +36,14 @@ const roundPolygon = (
       get prev() { return preRoundedPoints[(id - 1 + points.length) % points.length] },
       get next() { return preRoundedPoints[(id + 1) % points.length] },
     }
+
+    typeof curr.r === "number"
+    ? curr.r === 0
+      ? preRoundedZeroLimPoints.push(preRoundedPoint)
+      : preRoundedLimPoints.push(preRoundedPoint)
+    : preRoundedNoneLimPoints.push(preRoundedPoint)
+
+    preRoundedPoints.push(preRoundedPoint)
   })
 
 
@@ -43,8 +56,15 @@ const roundPolygon = (
   })
 
 
+  // lock zero limit radius points
+  if (preRoundedZeroLimPoints.length)
+    preRoundedZeroLimPoints.forEach((p) => {
+      p.arc.radius = 0
+      lockPoint(p)
+    })
+
+
   // calc limit radius and its offsets
-  const preRoundedLimPoints = preRoundedPoints.filter((p) => p.arc.lim > 0)
   if (preRoundedLimPoints.length) {
     let minLimPoint = getMinHit(preRoundedLimPoints)
     while (minLimPoint) {
@@ -55,8 +75,7 @@ const roundPolygon = (
   
 
   // calc common radius and its offsets
-  const preRoundedZeroLimPoints = preRoundedPoints.filter((p) => p.arc.lim === 0)
-  if (preRoundedZeroLimPoints.length && radius > 0) {
+  if (preRoundedNoneLimPoints.length && radius > 0) {
     let minHitPoint = getMinHit(preRoundedPoints)
     while (minHitPoint) {
       calcCommonRadius(minHitPoint, radius)
