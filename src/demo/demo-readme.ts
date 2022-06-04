@@ -3,6 +3,8 @@ import { InitPoint } from "../types"
 import { getcanvas, shape, vertex, arc, CLOSE, fill, stroke, text, font, settext, circle, rect } from "bratik"
 import roundPolygon from ".."
 
+document.querySelector("label")!.classList.add("hidden")
+
 const
   { height, width } = getcanvas(960, 280),
   grey = "#000d",
