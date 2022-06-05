@@ -9,13 +9,13 @@ const roundPolygon = (
 
   const
     preRoundedPoints: PreRoundedPoint[] = [],
-    preRoundedLimPoints: PreRoundedPoint[] = [],
-    preRoundedZeroLimPoints: PreRoundedPoint[] = [],
-    preRoundedNoneLimPoints: PreRoundedPoint[] = []
+    limPoints: PreRoundedPoint[] = [],
+    noLimPoints: PreRoundedPoint[] = [],
+    zeroPoints: PreRoundedPoint[] = []
 
   // prepare points, calc angles
   points.forEach((curr, id) => {
-    
+
     const
       prev = points[(id - 1 + points.length) % points.length],
       next = points[(id + 1) % points.length],
@@ -24,7 +24,7 @@ const roundPolygon = (
       angle = getAngles(prev, curr, next),
       lim = curr.r !== undefined ? Math.min(nextLength / angle.vel, prevLength / angle.vel, curr.r) : 0
 
-      const preRoundedPoint = {
+    const preRoundedPoint = {
       ...curr,
       angle,
       offset: 0,
@@ -37,14 +37,30 @@ const roundPolygon = (
       get next() { return preRoundedPoints[(id + 1) % points.length] },
     }
 
+    // if point overlaps another point
+    if (isNaN(angle.main)) {
+      angle.main = 0
+      angle.bis = angle.prev || angle.next
+      zeroPoints.push(preRoundedPoint)
+    }
+
     typeof curr.r === "number"
     ? curr.r === 0
-      ? preRoundedZeroLimPoints.push(preRoundedPoint)
-      : preRoundedLimPoints.push(preRoundedPoint)
-    : preRoundedNoneLimPoints.push(preRoundedPoint)
+      ? zeroPoints.push(preRoundedPoint)
+      : limPoints.push(preRoundedPoint)
+    : noLimPoints.push(preRoundedPoint)
 
     preRoundedPoints.push(preRoundedPoint)
   })
+
+
+  // lock (overlapped | zero radius) points
+  if (zeroPoints.length)
+    zeroPoints.forEach((p) => {
+      p.angle.vel = 0
+      p.arc.radius = 0
+      lockPoint(p)
+    })
 
 
   // calc collision radius for each point
@@ -56,26 +72,18 @@ const roundPolygon = (
   })
 
 
-  // lock zero limit radius points
-  if (preRoundedZeroLimPoints.length)
-    preRoundedZeroLimPoints.forEach((p) => {
-      p.arc.radius = 0
-      lockPoint(p)
-    })
-
-
   // calc limit radius and its offsets
-  if (preRoundedLimPoints.length) {
-    let minLimPoint = getMinHit(preRoundedLimPoints)
+  if (limPoints.length) {
+    let minLimPoint = getMinHit(limPoints)
     while (minLimPoint) {
       calcLimitRadius(minLimPoint)
-      minLimPoint = getMinHit(preRoundedLimPoints)
+      minLimPoint = getMinHit(limPoints)
     }
   }
-  
+
 
   // calc common radius and its offsets
-  if (preRoundedNoneLimPoints.length && radius > 0) {
+  if (noLimPoints.length && radius > 0) {
     let minHitPoint = getMinHit(preRoundedPoints)
     while (minHitPoint) {
       calcCommonRadius(minHitPoint, radius)
@@ -104,8 +112,8 @@ const roundPolygon = (
       offset: p.offset,
       arc: {
         radius: p.arc.radius,
-        x: p.x + Math.cos(p.angle.bis) * bisLength,
-        y: p.y + Math.sin(p.angle.bis) * bisLength,
+        x: p.x + (Math.cos(p.angle.bis) * bisLength || 0),
+        y: p.y + (Math.sin(p.angle.bis) * bisLength || 0),
       },
       in: {
         length: p.in.length,
