@@ -11,7 +11,7 @@ const roundPolygon = (
     preRoundedPoints: PreRoundedPoint[] = [],
     limPoints: PreRoundedPoint[] = [],
     noLimPoints: PreRoundedPoint[] = [],
-    zeroPoints: PreRoundedPoint[] = []
+    zeroLimPoints: PreRoundedPoint[] = []
 
   // prepare points, calc angles
   points.forEach((curr, id) => {
@@ -41,22 +41,23 @@ const roundPolygon = (
     if (isNaN(angle.main)) {
       angle.main = 0
       angle.bis = angle.prev || angle.next
-      zeroPoints.push(preRoundedPoint)
+      zeroLimPoints.push(preRoundedPoint)
     }
 
-    typeof curr.r === "number"
-    ? curr.r === 0
-      ? zeroPoints.push(preRoundedPoint)
-      : limPoints.push(preRoundedPoint)
-    : noLimPoints.push(preRoundedPoint)
+    // spread points into either limited, zero-limited or none-limited lists
+    // ( is limited if point has own radius to round )
+    if (typeof curr.r === "number")
+      if (curr.r === 0) zeroLimPoints.push(preRoundedPoint)
+      else limPoints.push(preRoundedPoint)
+    else noLimPoints.push(preRoundedPoint)
 
     preRoundedPoints.push(preRoundedPoint)
   })
 
 
   // lock (overlapped | zero radius) points
-  if (zeroPoints.length)
-    zeroPoints.forEach((p) => {
+  if (zeroLimPoints.length)
+    zeroLimPoints.forEach((p) => {
       p.angle.vel = 0
       p.arc.radius = 0
       lockPoint(p)
