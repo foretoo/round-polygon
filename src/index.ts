@@ -75,10 +75,10 @@ const roundPolygon = (
 
   // calc limit radius and its offsets
   if (limPoints.length) {
-    let minLimPoint = getMinHit(limPoints)
-    while (minLimPoint) {
-      calcLimitRadius(minLimPoint)
-      minLimPoint = getMinHit(limPoints)
+    let minHitPoint = getMinHit(limPoints)
+    while (minHitPoint) {
+      calcLimitRadius(minHitPoint)
+      minHitPoint = getMinHit(limPoints)
     }
   }
 
