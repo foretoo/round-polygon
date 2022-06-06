@@ -1,5 +1,5 @@
 import { InitPoint, PreRoundedPoint, RoundedPoint } from "./types"
-import { round, getLength, getAngles } from "./utils"
+import { round, getLength, getAngles, PI } from "./utils"
 
 
 
@@ -21,26 +21,45 @@ const roundPolygon = (
       next = points[(id + 1) % points.length],
       nextLength = getLength(curr, next),
       prevLength = getLength(prev, curr),
-      angle = getAngles(prev, curr, next),
-      lim = curr.r !== undefined ? Math.min(nextLength / angle.vel, prevLength / angle.vel, curr.r) : 0
+      angle = getAngles(prev, curr, next)
+    
+    if (angle.main === 0) {
+      angle.main = Number.EPSILON
+      angle.vel = Number.MAX_SAFE_INTEGER
+    }
+    if (angle.main === PI) angle.vel = 0
 
     const preRoundedPoint = {
       ...curr,
       angle,
       offset: 0,
-      arc: { radius, hit: radius, lim },
-      in: { length: prevLength, rest: prevLength },
-      out: { length: nextLength, rest: nextLength },
+      arc: {
+        radius,
+        hit: radius,
+        lim: curr.r !== undefined
+        ? Math.min(
+            nextLength / angle.vel,
+            prevLength / angle.vel,
+            curr.r
+          )
+        : 0
+      },
+      in: {
+        length: prevLength,
+        rest:   prevLength
+      },
+      out: {
+        length: nextLength,
+        rest:   nextLength
+      },
       locked: false,
       id,
-      get prev() { return preRoundedPoints[(id - 1 + points.length) % points.length] },
-      get next() { return preRoundedPoints[(id + 1) % points.length] },
-    }
-
-
-    if (angle.main === 0) {
-      angle.main = Number.EPSILON
-      angle.vel = Number.MAX_SAFE_INTEGER
+      get prev() {
+        return preRoundedPoints[(id - 1 + points.length) % points.length]
+      },
+      get next() {
+        return preRoundedPoints[(id + 1) % points.length]
+      },
     }
 
     // if point overlaps another point

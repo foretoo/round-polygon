@@ -139,7 +139,7 @@ ctx.stroke()
 - ~~if "r": 0 in InitPoint, prevent it to pass in calcCommonRadius~~
 - ~~handle points overlap~~
 - ~~handle 0 radians main-angle point~~
-- handle PI main-angle point
+- ~~handle PI main-angle point~~
 - input and output might be SVG path
 - provide array of points aligned on arc, number of points of each arc or length between points should be defined as an argument
 - provide bezier curve estimations as an alernative to an arc output propperty
