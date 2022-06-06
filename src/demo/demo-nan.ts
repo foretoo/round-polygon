@@ -71,7 +71,7 @@ function draw() {
   shape()
   polygon.forEach((p, i) => {
     !i && vertex(p.in.x, p.in.y)
-    p.arc.radius && arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
+    p.angle.main > 3e-4 && arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
     vertex(p.next.in.x, p.next.in.y)
   })
   shape(CLOSE)
@@ -84,7 +84,7 @@ function draw() {
     circle(p.arc.x, p.arc.y, 2)
 
     //// Arcs of roundings, stroked
-    if (p.arc.radius) {
+    if (p.angle.main > 3e-4) {
       fill(null)
       stroke(highlight, 2)
       shape()
