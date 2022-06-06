@@ -1,5 +1,5 @@
 import { InitPoint, PreRoundedPoint, RoundedPoint } from "./types"
-import { getLength, getAngles } from "./utils"
+import { round, getLength, getAngles } from "./utils"
 
 
 
@@ -37,6 +37,12 @@ const roundPolygon = (
       get next() { return preRoundedPoints[(id + 1) % points.length] },
     }
 
+
+    if (angle.main === 0) {
+      angle.main = Number.EPSILON
+      angle.vel = Number.MAX_SAFE_INTEGER
+    }
+
     // if point overlaps another point
     if (isNaN(angle.main)) {
       angle.main = 0
@@ -67,8 +73,8 @@ const roundPolygon = (
   // calc collision radius for each point
   preRoundedPoints.forEach((p) => {
     p.arc.hit = Math.min(
-      p.out.length / (p.angle.vel + p.next.angle.vel),
-      p.in.length  / (p.angle.vel + p.prev.angle.vel),
+      p.out.rest / (p.angle.vel + p.next.angle.vel),
+      p.in.rest  / (p.angle.vel + p.prev.angle.vel),
     )
   })
 
@@ -104,15 +110,15 @@ const roundPolygon = (
       x: p.x,
       y: p.y,
       angle: {
-        main: p.angle.main,
+        main: round(p.angle.main),
         prev: p.angle.prev,
         next: p.angle.next,
         bis:  p.angle.bis,
         dir:  p.angle.dir,
       },
-      offset: p.offset,
+      offset: round(p.offset),
       arc: {
-        radius: p.arc.radius,
+        radius: round(p.arc.radius),
         x: p.x + (Math.cos(p.angle.bis) * bisLength || 0),
         y: p.y + (Math.sin(p.angle.bis) * bisLength || 0),
       },
