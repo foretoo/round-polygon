@@ -18,11 +18,18 @@ const
   radiusvalue = document.querySelector("#radiusvalue")!,
   points: InitPoint[] = [
     // { x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: l*4+ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: l*4+oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
+    
+    // 0 angle
+    // { x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
     // { x: l*3+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
     // { x: l+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
-    { x: l*2+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
     // { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
-    // { x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
+
+    // overlaps
+    // { x: l*2+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
+    // { x: l*2+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
+    // { x: l*2+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
+    // { x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
   ]
 
 radiusrange.value = "1000"
