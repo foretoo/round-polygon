@@ -7,35 +7,33 @@ import roundPolygon from ".."
 
 const
   { height, width } = getcanvas(),
-  l = 200,
-  ox = width/2 - l/2,
-  oy = height/2 - l/2,
+  l = 50,
+  ox = width/2 - l*2,
+  oy = height/2 - l*2,
+  f = 1e-5,
   grey = "#0007",
   skin = "#f407",
   highlight = "#e02",
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
   points: InitPoint[] = [
-    // { x: l/2+ox, y:     oy },{ x: l/2+ox, y: l/2+oy },
-    // { x: l  +ox, y: l/2+oy },{ x: l/2+ox, y: l/2+oy },
-    // { x: l/2+ox, y: l  +oy },{ x: l/2+ox, y: l/2+oy },
-    // { x:     ox, y: l/2+oy },{ x: l/2+ox, y: l/2+oy },
-    { x: 304, y: 210 },{ x: 304, y: 210 },{ x: 304, y: 210 },{ x: 100, y: 250 },{ x: 221, y: 501 },
+    // { x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: l*4+ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: l*4+oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
+    // { x: l*3+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
+    { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
+    // { x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
   ]
 
-radiusrange.value = "250"
+radiusrange.value = "100"
 radiusvalue.textContent = radiusrange.value
 let polygon: RoundedPoint[]
 
-for (let i = 0; i < points.length; i++) {
-  // if (i % 2 === 0) points[i].r = 0
-}
+// for (let i = 0; i < points.length; i++) if (i % 2 === 0) points[i].r = 0
 polygon = roundPolygon(points, +radiusrange.value)
-console.log(polygon);
+// polygon.forEach((p) => {
+//   const { id, offset, angle: { main }} = p
+//   console.log(`id-${id} angle-${main} offset-${offset}`)
+// })
 
-// minmain 0.0003
-    // min coor diff 1e-13
-    // if (angle.main === 0) angle.vel = Number.MAX_SAFE_INTEGER
 
 radiusrange.oninput = () => {
   radiusvalue.textContent = radiusrange.value
@@ -61,9 +59,9 @@ function draw() {
   stroke(null)
   shape()
   polygon.forEach((p, i) => {
-    if (!i) vertex(p.in.x, p.in.y);
-    arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius);
-    vertex(p.next.in.x, p.next.in.y);
+    !i && vertex(p.in.x, p.in.y)
+    p.arc.radius && arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
+    vertex(p.next.in.x, p.next.in.y)
   })
   shape(CLOSE)
 
@@ -75,12 +73,14 @@ function draw() {
     circle(p.arc.x, p.arc.y, 2)
 
     //// Arcs of roundings, stroked
-    fill(null)
-    stroke(highlight, 2)
-    shape()
-    vertex(p.in.x, p.in.y)
-    arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
-    shape()
+    if (p.arc.radius) {
+      fill(null)
+      stroke(highlight, 2)
+      shape()
+      vertex(p.in.x, p.in.y)
+      arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
+      shape()
+    }
 
     //// Points numbers
     stroke(null)
