@@ -1,8 +1,10 @@
 import { InitPoint } from "./types"
 
+export const round = (n: number) => Math.round(n * 1e10) / 1e10
+
 export const getLength = (
   A: InitPoint, B: InitPoint,
-) => Math.sqrt(Math.pow(B.x - A.x, 2) + Math.pow(B.y - A.y, 2))
+) => round(Math.sqrt((B.x - A.x)*(B.x - A.x) + (B.y - A.y)*(B.y - A.y)))
 
 export const getAngle = (
   A: InitPoint, B: InitPoint, C?: InitPoint,
