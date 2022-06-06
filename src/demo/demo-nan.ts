@@ -19,18 +19,22 @@ const
   points: InitPoint[] = [
     // { x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: l*4+ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: l*4+oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
     // { x: l*3+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
-    { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
+    // { x: l+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
+    { x: l*2+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
+    // { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
     // { x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
   ]
 
-radiusrange.value = "100"
+radiusrange.value = "1000"
 radiusvalue.textContent = radiusrange.value
 let polygon: RoundedPoint[]
 
 // for (let i = 0; i < points.length; i++) if (i % 2 === 0) points[i].r = 0
 polygon = roundPolygon(points, +radiusrange.value)
 // polygon.forEach((p) => {
-//   const { id, offset, angle: { main }} = p
+//   const {
+//     id, offset, angle: { main },
+//   } = p
 //   console.log(`id-${id} angle-${main} offset-${offset}`)
 // })
 
