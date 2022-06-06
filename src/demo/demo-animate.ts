@@ -4,12 +4,12 @@ import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text
 import roundPolygon from ".."
 
 const
-  { canvas, ctx, height, width } = getcanvas(),
+  { ctx, height, width } = getcanvas(),
   pointnum = 6,
   grey = "#0007",
   skin = "#f407",
   highlight = "#e02",
-  padding = 0, // Math.min(width, height) / 10,
+  padding = 0,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
   limradius = 10
