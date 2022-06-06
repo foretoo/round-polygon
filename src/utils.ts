@@ -20,7 +20,7 @@ export const getAngle = (
   }
 }
 
-const PI = Math.PI, TAU = PI * 2
+export const PI = Math.PI, TAU = PI * 2
 
 export const getClockDir = (
   angle1: number, angle2: number
