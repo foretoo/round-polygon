@@ -28,8 +28,8 @@ let points: InitPoint[] = [
     polygon: RoundedPoint[]
 
 for (let i = 0; i < points.length; i++) {
-  points[i].r = limradius * (i + 1)
-  !i && (points[i].r = Number.MAX_SAFE_INTEGER)
+  points[i].r = limradius * i
+  // !i && (points[i].r = Number.MAX_SAFE_INTEGER)
 }
 polygon = roundPolygon(points)
 
@@ -114,7 +114,7 @@ function draw() {
   shape()
   polygon.forEach((p, i) => {
     if (!i) vertex(p.in.x, p.in.y);
-    arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius);
+    p.arc.radius && arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius);
     vertex(p.next.in.x, p.next.in.y);
   })
   shape(CLOSE)
@@ -127,12 +127,14 @@ function draw() {
     circle(p.arc.x, p.arc.y, 2)
 
     //// Arcs of roundings, stroked
-    fill(null)
-    stroke(highlight, 3)
-    shape()
-    vertex(p.in.x, p.in.y)
-    arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
-    shape()
+    if (p.arc.radius) {
+      fill(null)
+      stroke(highlight, 3)
+      shape()
+      vertex(p.in.x, p.in.y)
+      arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius);
+      shape()
+    }
 
     //// Points numbers
     stroke(null)

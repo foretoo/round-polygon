@@ -91,8 +91,8 @@ function draw() {
   stroke(null)
   shape()
   polygon.forEach((p, i) => {
-    if (!i) vertex(p.in.x, p.in.y)
-    arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
+    !i && vertex(p.in.x, p.in.y)
+    p.arc.radius && arc(p.x, p.y, p.next.x, p.next.y, p.arc.radius)
     vertex(p.next.in.x, p.next.in.y)
   })
   shape(CLOSE)
@@ -105,12 +105,14 @@ function draw() {
     circle(p.arc.x, p.arc.y, 3)
 
     //// Arcs of roundings, stroked
-    fill(null)
-    stroke(highlight, 4)
-    shape()
-    vertex(p.in.x, p.in.y)
-    arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
-    shape()
+    if (p.arc.radius > 3e-3) {
+      fill(null)
+      stroke(highlight, 2)
+      shape()
+      vertex(p.in.x, p.in.y)
+      arc(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
+      shape()
+    }
 
     //// Points numbers
     stroke(null)
