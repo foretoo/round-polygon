@@ -1,178 +1,101 @@
 import "./style.sass"
 import { InitPoint, RoundedPoint } from "../types"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, frame, loop, animate, stop, pxratio, looping } from "bratik"
-import roundPolygon from ".."
-import SimplexNoise from "simplex-noise"
+import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect, animate, text, font, settext } from "bratik"
+import { Polio } from "./Polio"
+
 
 const
-  simplex = new SimplexNoise(),
   { ctx, height, width } = getcanvas(),
-  pr = pxratio(),
-  grey = "#0004",
-  padding = -Math.min(width, height) / 4,
-  pointnum = 13,
   radius = Number.MAX_SAFE_INTEGER,
+  mg = Math.min(width, height) / 3,
   control = document.querySelector("label")!,
-  vergradient = initgradient(),
-  horgradient = initgradient()
+  color = [ "#7fa", "#a7f", "#fa7" ],
+  helly = {
+    image: "🏄",
+    ...randtxt(100)
+  }
 
 control.classList.add("hidden")
 
-let verpoints: InitPoint[] = [],
-    horpoints: InitPoint[] = [],
-    verpolygon: RoundedPoint[],
-    horpolygon: RoundedPoint[]
 
 
+const verpoly = new Polio(9, radius, width + mg * 2, height + mg * 2)
+verpoly.initgradient()
+verpoly.update(8000)
 
-initPolio(verpoints, 5, true)
-initPolio(horpoints, 13)
+const horpoly = new Polio(13, radius, width + mg, height + mg)
+horpoly.initgradient()
 
-function initPolio(polio: InitPoint[], num: number, instantly?: boolean) {
-  for (let i = 0; i < num; i++) polio[i] = getrandpoint()
-  instantly && polio.forEach(animatepoint)
-}
+// const keypoly = new Polio(4, radius, width - mg, height - mg)
+// keypoly.color(color[3])
+ctx.shadowOffsetY = 20
+font(64)
+settext("center", "middle")
 
-function animatepoint(p: InitPoint) {
-  const move = animate(8000, "cubicInOut")
-  const newp = getrandpoint()
-  move(p, { x: newp.x, y: newp.y })
-}
 
-function getrandpoint() {
-  return {
-    x: padding + Math.random() * (width - padding * 2),
-    y: padding + Math.random() * (height - padding * 2),
-  }
-}
 
 const play = () => {
   loop(() => {
-    if (frame % 480 === 0) {
-      verpoints.forEach(animatepoint)
+    if (frame % 480 === 0) verpoly.update(8000)
+    if ((frame - 320) % 480 === 0) horpoly.update(8000)
+    if ((frame - 160) % 480 === 0) {
+      const fly = animate(8000)
+      fly(helly, { ...randtxt(100) })
     }
-    if ((frame - 240) % 480 === 0) {
-      horpoints.forEach(animatepoint)
-    }
-    verpolygon = roundPolygon(verpoints, radius)
-    horpolygon = roundPolygon(horpoints, radius)
-    draw()
+
+    bg("black")
+
+    verpoly.draw()
+    ctx.drawImage(verpoly.image, -mg * 2, -mg * 2)
+    lines(verpoly.points, mg)
+    centres(verpoly.rounded, "white", mg)
+
+    horpoly.draw()
+    ctx.drawImage(horpoly.image, -mg, -mg)
+    lines(horpoly.points, mg / 2)
+    centres(horpoly.rounded, "black", mg / 2)
+
+    // keypoly.draw()
+    // ctx.drawImage(keypoly.image, mg, mg)
+
+    ctx.shadowColor = "#0004"
+    ctx.shadowBlur = 20
+    text(helly.image, helly.x, helly.y)
+    ctx.shadowColor = "transparent"
+    ctx.shadowBlur = 0
   })
 }
 
-
-
-const { el: verbg, dr: verdraw } = getbg(vergradient, width, height, pr)
-const { el: horbg, dr: hordraw } = getbg(horgradient, width, height, pr, true)
-
-
-
-// ctx.globalCompositeOperation = "difference"
-function draw() {
-  clear()
-  hordraw(horpolygon)
-  verdraw(verpolygon)
-
-  ctx.drawImage(horbg, 0, 0)
-  lines(horpoints, grey)
-  centres(horpolygon, "white")
-
-  ctx.drawImage(verbg, 0, 0)
-  lines(verpoints, grey)
-  centres(verpolygon, "black")
+function bg(color: string) {
+  fill(color)
+  rect(0, 0, width, height)
 }
 
-function lines(points: InitPoint[], color: string) {
-  stroke(color, 0.5)
+function lines(points: InitPoint[], mg: number) {
+  stroke("#fff4", 0.5)
   fill(null)
   shape()
-  points.forEach((p) => vertex(p.x, p.y))
+  points.forEach((p) => vertex(p.x - mg, p.y - mg))
   shape(CLOSE)
 }
 
-function centres(polygon: RoundedPoint[], color: string) {
+function centres(polygon: RoundedPoint[], color: string, mg: number) {
   polygon.forEach((p) => {
     stroke(null)
     fill(color)
-    circle(p.arc.x, p.arc.y, 3)
+    circle(p.arc.x - mg, p.arc.y - mg, 3)
   })
 }
 
-function noise(x: number, y: number) {
-  return ( simplex.noise2D(x, y) + 1 ) / 2
-}
-
-type Mapper<T> = (value: unknown, index: number) => T
-function newarr<T>(length: number, mapper: T | Mapper<T>): T[] {
-  return Object.prototype.toString.call(mapper) === "[object Function]"
-  ? Array(length).fill(null).map(mapper as Mapper<T>)
-  : Array(length).fill(mapper)
-}
-
-function initgradient() {
-  return (
-    newarr(3, (_, i) =>
-      newarr((height / 50) / (i + 1)*(i + 1) | 0, Math.random)
-    ).reverse()
-  )
-}
-
-function getbg(
-  gradient: number[][],
-  width: number,
-  height: number,
-  pr: number,
-  h = false
-) {
-  const el = document.createElement("canvas")
-  el.width = width * pr
-  el.height = height * pr
-  el.classList.add("bg")
-  document.body.appendChild(el)
-  const cx = el.getContext("2d")!
-
-  let clip: Path2D
-  const dr = (polygon: RoundedPoint[]) => {
-    cx.save()
-    cx.clearRect(0, 0, el.width, el.height)
-    clip = new Path2D()
-    polygon.forEach((p, i) => {
-      !i && clip.moveTo(p.in.x * pr, p.in.y * pr)
-      p.angle.main > 3e-4 && clip.arcTo(p.x * pr, p.y * pr, p.next.x * pr, p.next.y * pr, p.arc.radius * pr)
-      clip.lineTo(p.next.in.x * pr, p.next.in.y * pr)
-    })
-    cx.clip(clip)
-
-    gradient.forEach((layer, j) => {
-      const img = cx.createLinearGradient(0, 0, h ? 0 : el.width, h ? el.height : 0)
-
-      layer.forEach((y) => {
-        const v = noise(
-                frame * layer.length / 5555,
-                y * height
-              ),
-              value = h ? v * v * v : 1 - (v * v * v),
-              r = value * 255,
-              g = value * 255,
-              b = value * 255,
-              a = 1 - j / gradient.length
-
-        img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
-      })
-
-      cx.fillStyle = img
-      cx.fillRect(0, 0, el.width, el.height)
-    })
-
-    cx.restore()
+function randtxt(mg: number) {
+  return {
+    x: mg + Math.random() * (width - mg * 2),
+    y: mg + Math.random() * (height - mg * 2)
   }
-  return { el, dr }
 }
 
 document.onkeyup = ({ code }) => {
-  if (code === "Space") {
-    looping ? stop() : play()
-  }
+  code === "Space" && (looping ? stop() : play())
 }
 
 play()
