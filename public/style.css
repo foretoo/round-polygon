@@ -22,6 +22,18 @@ body {
 canvas {
   display: block;
 }
+canvas.bg {
+  height: 0px;
+}
+canvas.grab {
+  cursor: pointer;
+}
+canvas.grabbing {
+  cursor: grabbing;
+}
+canvas.grabbing + label {
+  pointer-events: none;
+}
 
 label, p {
   position: absolute;
@@ -30,21 +42,16 @@ label, p {
 }
 
 label {
-  width: 100%;
-  top: 2rem;
-  display: flex;
-  justify-content: center;
-  gap: 1rem;
-}
-label input {
   width: 50%;
+  top: 2rem;
+  display: grid;
+  gap: 0.5rem;
+}
+label.hidden {
+  display: none;
 }
 label span {
-  width: calc(25% - 1rem);
   font-size: inherit;
-}
-label span:first-child {
-  text-align: right;
 }
 
 p {

@@ -6,5 +6,8 @@
     "noResolve": true,
     "outDir": "public",
   },
-  "files": ["src/demo/demo.ts"]
+  "files": [
+    "src/demo/demo.ts",
+    "src/demo/Polio.ts"
+  ]
 }
