@@ -5,7 +5,7 @@ Small, typed, dependency-free tool to round corners of 2d-polygon provided by an
 
 The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
 
-![demo](./public/demo.png)
+![preview](./public/readme-preview.png)
 
 ###  [Demo page](https://foretoo.github.io/round-polygon)
 <br/>
@@ -124,8 +124,13 @@ roundedPolygon.forEach((p) => {
 })
 ctx.stroke()
 ```
+![example](./public/readme-example.png)
 
 ## Changelog
+
+### v0.6.4
+- common radius doesn't affect init-points with "r" = 0
+- handle points overlapping, 0/PI radians main-angle point
 
 ### v0.6.0
 - added ability to provide a certain radius to a certain Point
@@ -136,10 +141,6 @@ ctx.stroke()
 - first stable version
 
 ### Upcoming
-- ~~if "r": 0 in InitPoint, prevent it to pass in calcCommonRadius~~
-- ~~handle points overlap~~
-- ~~handle 0 radians main-angle point~~
-- ~~handle PI main-angle point~~
 - input and output might be SVG path
 - provide array of points aligned on arc, number of points of each arc or length between points should be defined as an argument
 - provide bezier curve estimations as an alernative to an arc output propperty
