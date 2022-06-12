@@ -38,22 +38,11 @@ const roundPolygon = (
       arc: {
         radius,
         hit: radius,
-        lim: curr.r !== undefined
-        ? Math.min(
-            nextlen / angle.vel,
-            prevlen / angle.vel,
-            curr.r
-          )
-        : 0
+        // limit lim to prevent offset to become bigger than prev/next length
+        lim: Math.min(nextlen / angle.vel, prevlen / angle.vel, curr.r || 0)
       },
-      in: {
-        length: prevlen,
-        rest:   prevlen
-      },
-      out: {
-        length: nextlen,
-        rest:   nextlen
-      },
+      in: { length: prevlen, rest: prevlen },
+      out: { length: nextlen, rest: nextlen },
       locked: false,
       id,
       get prev() { return preRoundedPoints[(id - 1 + len) % len] },
@@ -63,7 +52,7 @@ const roundPolygon = (
     // if point overlaps another point
     if (isNaN(angle.main)) {
       angle.main = 0
-      angle.bis = angle.prev || angle.next
+      angle.bis = angle.prev || angle.next // :)
       zeroLimPoints.push(preRoundedPoint)
     }
 
@@ -79,12 +68,11 @@ const roundPolygon = (
 
 
   // lock (overlapped | zero radius) points
-  if (zeroLimPoints.length)
-    zeroLimPoints.forEach((p) => {
-      p.angle.vel = 0
-      p.arc.radius = 0
-      lockPoint(p)
-    })
+  zeroLimPoints.forEach((p) => {
+    p.angle.vel = 0
+    p.arc.radius = 0
+    lockPoint(p)
+  })
 
 
   // calc collision radius for each point
@@ -97,30 +85,25 @@ const roundPolygon = (
 
 
   // calc limit radius and its offsets
-  if (limPoints.length) {
-    let minHitPoint = getMinHit(limPoints)
-    while (minHitPoint) {
-      calcLimitRadius(minHitPoint)
-      minHitPoint = getMinHit(limPoints)
-    }
+  let minHitPoint = getMinHit(limPoints)
+  while (minHitPoint) {
+    calcLimitRadius(minHitPoint)
+    minHitPoint = getMinHit(limPoints)
   }
 
 
   // calc common radius and its offsets
-  if (noLimPoints.length && radius > 0) {
-    let minHitPoint = getMinHit(preRoundedPoints)
-    while (minHitPoint) {
-      calcCommonRadius(minHitPoint, radius)
-      minHitPoint = getMinHit(preRoundedPoints)
-    }
+  minHitPoint = getMinHit(preRoundedPoints)
+  while (minHitPoint) {
+    calcCommonRadius(minHitPoint, radius)
+    minHitPoint = getMinHit(preRoundedPoints)
   }
   
 
   // final calc coordinates
-  const roundedPoints: RoundedPoint[] = 
-  preRoundedPoints.map((p) => {
+  const roundedPoints = preRoundedPoints.map((p) => {
 
-    const bisLength = p.arc.radius / Math.sin(p.angle.main / 2)
+    const bislen = p.arc.radius / Math.sin(p.angle.main / 2)
 
     return {
       id: p.id,
@@ -136,8 +119,8 @@ const roundPolygon = (
       offset: round(p.offset),
       arc: {
         radius: round(p.arc.radius),
-        x: p.x + (Math.cos(p.angle.bis) * bisLength || 0),
-        y: p.y + (Math.sin(p.angle.bis) * bisLength || 0),
+        x: p.x + (Math.cos(p.angle.bis) * bislen || 0),
+        y: p.y + (Math.sin(p.angle.bis) * bislen || 0),
       },
       in: {
         length: p.in.length,
