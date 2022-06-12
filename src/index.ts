@@ -32,7 +32,8 @@ const roundPolygon = (
     if (angle.main === PI) angle.vel = 0
 
     const preRoundedPoint = {
-      ...curr,
+      x: curr.x,
+      y: curr.y,
       angle,
       offset: 0,
       arc: {
