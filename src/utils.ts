@@ -6,20 +6,6 @@ export const getLength = (
   A: InitPoint, B: InitPoint,
 ) => round(Math.sqrt((B.x - A.x)*(B.x - A.x) + (B.y - A.y)*(B.y - A.y)))
 
-export const getAngle = (
-  A: InitPoint, B: InitPoint, C?: InitPoint,
-) => {
-  if (!C)
-    return Math.atan2(B.y - A.y, B.x - A.x)
-  else {
-    const AB = getLength(A, B),
-          BC = getLength(B, C),
-          CA = getLength(C, A)
-
-    return Math.acos((AB*AB + BC*BC - CA*CA) / (2*AB*BC))
-  }
-}
-
 export const PI = Math.PI, TAU = PI * 2
 
 export const getClockDir = (
@@ -34,19 +20,22 @@ export const getClockDir = (
 }
 
 export const getAngles = (
-  prev_point: InitPoint,
-  curr_point: InitPoint,
-  next_point: InitPoint,
+  prevpoint: InitPoint,
+  currpoint: InitPoint,
+  nextpoint: InitPoint,
+  prevlen: number,
+  mainlen: number,
+  nextlen: number,
 ) => {
   const
-    main = getAngle(prev_point, curr_point, next_point),
-    prev = getAngle(curr_point, prev_point),
-    next = getAngle(curr_point, next_point),
+    prev = Math.atan2(prevpoint.y - currpoint.y, prevpoint.x - currpoint.x),
+    next = Math.atan2(nextpoint.y - currpoint.y, nextpoint.x - currpoint.x),
+    main = Math.acos((prevlen*prevlen + nextlen*nextlen - mainlen*mainlen) / (2*prevlen*nextlen)),
     vel = 1 / Math.tan(main / 2),
-    dir  = getClockDir(prev, next),
-    bis  = prev + dir * main / 2
-  
-  return { main, next, prev, vel, dir, bis }
+    dir = getClockDir(prev, next),
+    bis = prev + dir * main / 2
+
+  return { prev, next, main, vel, dir, bis }
 }
 
 export const assignValue = <T>(

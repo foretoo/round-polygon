@@ -8,6 +8,7 @@ const roundPolygon = (
 ): RoundedPoint[] => {
 
   const
+    len = points.length,
     preRoundedPoints: PreRoundedPoint[] = [],
     limPoints: PreRoundedPoint[] = [],
     noLimPoints: PreRoundedPoint[] = [],
@@ -17,12 +18,13 @@ const roundPolygon = (
   points.forEach((curr, id) => {
 
     const
-      prev = points[(id - 1 + points.length) % points.length],
-      next = points[(id + 1) % points.length],
-      nextLength = getLength(curr, next),
-      prevLength = getLength(prev, curr),
-      angle = getAngles(prev, curr, next)
-    
+      prev = points[(id - 1 + len) % len],
+      next = points[(id + 1) % len],
+      prevlen = getLength(prev, curr),
+      mainlen = getLength(prev, next),
+      nextlen = getLength(curr, next),
+      angle = getAngles(prev, curr, next, prevlen, mainlen, nextlen)
+
     if (angle.main === 0) {
       angle.main = Number.EPSILON
       angle.vel = Number.MAX_SAFE_INTEGER
@@ -38,28 +40,24 @@ const roundPolygon = (
         hit: radius,
         lim: curr.r !== undefined
         ? Math.min(
-            nextLength / angle.vel,
-            prevLength / angle.vel,
+            nextlen / angle.vel,
+            prevlen / angle.vel,
             curr.r
           )
         : 0
       },
       in: {
-        length: prevLength,
-        rest:   prevLength
+        length: prevlen,
+        rest:   prevlen
       },
       out: {
-        length: nextLength,
-        rest:   nextLength
+        length: nextlen,
+        rest:   nextlen
       },
       locked: false,
       id,
-      get prev() {
-        return preRoundedPoints[(id - 1 + points.length) % points.length]
-      },
-      get next() {
-        return preRoundedPoints[(id + 1) % points.length]
-      },
+      get prev() { return preRoundedPoints[(id - 1 + len) % len] },
+      get next() { return preRoundedPoints[(id + 1) % len] },
     }
 
     // if point overlaps another point
@@ -151,8 +149,8 @@ const roundPolygon = (
         x: p.x + Math.cos(p.angle.next) * p.offset,
         y: p.y + Math.sin(p.angle.next) * p.offset,
       },
-      get prev() { return roundedPoints[(p.id - 1 + points.length) % points.length] },
-      get next() { return roundedPoints[(p.id + 1) % points.length] },
+      get prev() { return roundedPoints[(p.id - 1 + len) % len] },
+      get next() { return roundedPoints[(p.id + 1) % len] },
     }
   })
 
