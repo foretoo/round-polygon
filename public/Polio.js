@@ -1,9 +1,10 @@
 import SimplexNoise from "https://unpkg.com/simplex-noise@3.0.1/dist/esm/simplex-noise.js"
-import { frame, animate, pxratio } from "./bratik.js"
+import { frame, animate, pxratio } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
 import roundPolygon from "../lib/round-polygon.es.js"
 const simplex = new SimplexNoise()
 export class Polio {
-  constructor(num, radius, width, height) {
+  constructor(num, radius, width, height, dur) {
+    this.id = Polio.count
     this.num = num
     this.radius = radius
     this.width = width
@@ -21,14 +22,34 @@ export class Polio {
     this.getpoint = this.getpoint.bind(this)
     this.points = Array(this.num).fill(null).map(this.getpoint)
     this.rounded = roundPolygon(this.points, this.radius)
+    this.dur = dur
+    this.updater = animate({
+      dur: this.dur,
+      loop: true,
+      ontick: () => this.rounded = roundPolygon(this.points, this.radius),
+    })
+    this.player = this.points.map((_, i) => animate({
+      dur: this.dur,
+      ease: "cubicInOut",
+      onend: () => {
+        const newp = this.getpoint()
+        this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
+      },
+    }))
   }
-  update(dur) {
+  pause() {
+    this.updater.pause()
+    this.player.forEach((p) => p.pause())
+  }
+  play() {
+    this.updater.play()
+    this.player.forEach((p) => p.play())
+  }
+  init() {
+    this.updater.on({ t: 0 }, { t: 1 })
     for (let i = 0; i < this.num; i++) {
-      const move = animate(dur, "cubicInOut", () => {
-        this.rounded = roundPolygon(this.points, this.radius)
-      })
       const newp = this.getpoint()
-      move(this.points[i], { x: newp.x, y: newp.y })
+      this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
     }
   }
   color(color) {
