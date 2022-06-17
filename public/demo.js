@@ -1,6 +1,6 @@
-import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect, animate, text, font, settext } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
+import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
 import { Polio } from "./Polio.js"
-const { ctx, height, width } = getcanvas(), radius = Number.MAX_SAFE_INTEGER, mg = Math.min(width, height) / 3, control = document.querySelector("label"), color = [ "#7fa", "#a7f", "#fa7" ]
+const { ctx, height, width } = getcanvas(), radius = Number.MAX_SAFE_INTEGER, mg = Math.min(width, height) / 3, color = [ "#7fa", "#a7f", "#fa7" ]
 const verpoly = new Polio(9, radius, width + mg * 2, height + mg * 2, 8000)
 verpoly.initgradient()
 verpoly.init()
