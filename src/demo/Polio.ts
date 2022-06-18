@@ -1,5 +1,5 @@
 import { InitPoint, RoundedPoint } from "../types"
-import { frame, animate, pxratio } from "bratik"
+import { frame, animate, pxratio, TAU } from "bratik"
 import SimplexNoise from "simplex-noise"
 import roundPolygon from ".."
 
@@ -10,36 +10,47 @@ export class Polio {
   static count = 0
 
   id: number
-  radius: number
   num: number
+  radius: number
+  scale: number
   width: number
   height: number
+  min: number
+
   points: InitPoint[]
   rounded: RoundedPoint[]
   image: HTMLCanvasElement
   draw: () => void
-  player: ReturnType<typeof animate>[]
-  updater: ReturnType<typeof animate>
   dur: number
 
   private pr: number
   private ctx: CanvasRenderingContext2D
   private clip: Path2D
+  private player: ReturnType<typeof animate>[]
+  private updater: ReturnType<typeof animate>
+  private angles: { a: number }[]
 
 
 
   constructor(
-    num: number, radius: number, width: number, height: number, dur: number
+    num: number,
+    radius: number,
+    scale: number,
+    width: number,
+    height: number,
+    dur: number
   ) {
     this.id = Polio.count
     this.num = num
     this.radius = radius
+    this.scale = scale
     this.width = width
     this.height = height
+    this.min = Math.min(width, height) * this.scale
 
     this.draw = () => undefined
     this.color("black")
-    this.pr = pxratio()
+    this.pr = pxratio(1)
     this.image = document.createElement("canvas")
     this.image.width = width * this.pr
     this.image.height = height * this.pr
@@ -50,22 +61,29 @@ export class Polio {
 
     this.getpoint = this.getpoint.bind(this)
 
-    this.points = Array(this.num).fill(null).map(this.getpoint)
+    this.angles = Array(this.num).fill(null).map(this.setangle)
+    this.points = Array(this.num).fill(null).map((_, i) => ({
+      x: this.width / 2  + Math.cos(this.angles[i].a) * this.min / 2,
+      y: this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+    }))
     this.rounded = roundPolygon(this.points, this.radius)
 
     this.dur = dur
     this.updater = animate({
       dur: this.dur,
       loop: true,
-      ontick: () => this.rounded = roundPolygon(this.points, this.radius),
+      ontick: () => {
+        this.points.forEach((p, i) => {
+          p.x = this.width / 2  + Math.cos(this.angles[i].a) * this.min / 2
+          p.y = this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+        })
+        this.rounded = roundPolygon(this.points, this.radius)
+      },
     })
-    this.player = this.points.map((_, i) => animate({
+    this.player = this.angles.map((_, i) => animate({
       dur: this.dur,
       ease: "cubicInOut",
-      onend: () => {
-        const newp = this.getpoint()
-        this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
-      }
+      onend: () => this.player[i].on(this.angles[i], this.setangle())
     }))
   }
 
@@ -82,10 +100,8 @@ export class Polio {
   init() {
     this.updater.on({ t: 0 }, { t: 1 })
     for (let i = 0; i < this.num; i++) {
-      const newp = this.getpoint()
-      this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
+      this.player[i].on(this.angles[i], this.setangle())
     }
-    
   }
 
   color(color: string) {
@@ -136,6 +152,8 @@ export class Polio {
 
 
 
+  private setangle = () => ({ a: Math.random() * TAU })
+
   private getpoint() {
     return {
       x: Math.random() * this.width,
@@ -163,5 +181,5 @@ type Mapper<T> = (value: unknown, index: number) => T
 function newarr<T>(length: number, mapper: T | Mapper<T>): T[] {
   return Object.prototype.toString.call(mapper) === "[object Function]"
   ? Array(length).fill(null).map(mapper as Mapper<T>)
-  : Array(length).fill(mapper)
+  : Array(length).fill(mapper as T)
 }

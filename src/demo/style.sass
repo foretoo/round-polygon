@@ -14,7 +14,7 @@ html, body
 body
   position: relative
   display: grid
-  justify-items: center
+  justify-items: left
 
 canvas
   display: block
@@ -24,23 +24,32 @@ canvas
     cursor: pointer
   &.grabbing
     cursor: grabbing
-    + label
+    + div
        pointer-events: none
 
-label, p
+div, p
   position: absolute
   font-size: 0.8rem
   line-height: 1em
 
-label
-  width: 50%
-  top: 2rem
-  display: grid
-  gap: 0.5rem
+div
+  // width: 50%
+  // top: 2rem
+  display: flex
+  // gap: 0.5rem
   &.hidden
     display: none
   span
     font-size: inherit
+  button, a
+    padding: 0.2rem 0.3rem
+    font-size: inherit
+    color: black
+    background-color: transparent
+    border-bottom: 1px solid transparent
+    cursor: pointer
+    &:hover
+      border-bottom: 1px solid black
 
 p
   bottom: 2rem
