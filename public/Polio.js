@@ -1,14 +1,17 @@
 import SimplexNoise from "https://unpkg.com/simplex-noise@3.0.1/dist/esm/simplex-noise.js"
-import { frame, animate, pxratio } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
+import { frame, animate, pxratio, TAU } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
 import roundPolygon from "../lib/round-polygon.es.js"
 const simplex = new SimplexNoise()
 export class Polio {
-  constructor(num, radius, width, height, dur) {
+  constructor(num, radius, scale, width, height, dur) {
+    this.setangle = () => ({ a: Math.random() * TAU })
     this.id = Polio.count
     this.num = num
     this.radius = radius
+    this.scale = scale
     this.width = width
     this.height = height
+    this.min = Math.min(width, height) * this.scale
     this.draw = () => undefined
     this.color("black")
     this.pr = pxratio()
@@ -20,21 +23,28 @@ export class Polio {
     this.ctx = this.image.getContext("2d")
     this.clip = new Path2D()
     this.getpoint = this.getpoint.bind(this)
-    this.points = Array(this.num).fill(null).map(this.getpoint)
+    this.angles = Array(this.num).fill(null).map(this.setangle)
+    this.points = Array(this.num).fill(null).map((_, i) => ({
+      x: this.width / 2 + Math.cos(this.angles[i].a) * this.min / 2,
+      y: this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2,
+    }))
     this.rounded = roundPolygon(this.points, this.radius)
     this.dur = dur
     this.updater = animate({
       dur: this.dur,
       loop: true,
-      ontick: () => this.rounded = roundPolygon(this.points, this.radius),
+      ontick: () => {
+        this.points.forEach((p, i) => {
+          p.x = this.width / 2 + Math.cos(this.angles[i].a) * this.min / 2
+          p.y = this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+        })
+        this.rounded = roundPolygon(this.points, this.radius)
+      },
     })
-    this.player = this.points.map((_, i) => animate({
+    this.player = this.angles.map((_, i) => animate({
       dur: this.dur,
       ease: "cubicInOut",
-      onend: () => {
-        const newp = this.getpoint()
-        this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
-      },
+      onend: () => this.player[i].on(this.angles[i], this.setangle()),
     }))
   }
   pause() {
@@ -48,8 +58,7 @@ export class Polio {
   init() {
     this.updater.on({ t: 0 }, { t: 1 })
     for (let i = 0; i < this.num; i++) {
-      const newp = this.getpoint()
-      this.player[i].on(this.points[i], { x: newp.x, y: newp.y })
+      this.player[i].on(this.angles[i], this.setangle())
     }
   }
   color(color) {

@@ -16,7 +16,7 @@ html, body {
 body {
   position: relative;
   display: grid;
-  justify-items: center;
+  justify-items: left;
 }
 
 canvas {
@@ -31,27 +31,35 @@ canvas.grab {
 canvas.grabbing {
   cursor: grabbing;
 }
-canvas.grabbing + label {
+canvas.grabbing + div {
   pointer-events: none;
 }
 
-label, p {
+div, p {
   position: absolute;
   font-size: 0.8rem;
   line-height: 1em;
 }
 
-label {
-  width: 50%;
-  top: 2rem;
-  display: grid;
-  gap: 0.5rem;
+div {
+  display: flex;
 }
-label.hidden {
+div.hidden {
   display: none;
 }
-label span {
+div span {
   font-size: inherit;
+}
+div button, div a {
+  padding: 0.2rem 0.3rem;
+  font-size: inherit;
+  color: black;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+div button:hover, div a:hover {
+  border-bottom: 1px solid black;
 }
 
 p {
