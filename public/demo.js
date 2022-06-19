@@ -6,13 +6,11 @@ verpoly.initgradient()
 verpoly.init()
 const horpoly = new Polio(7, radius, initscale * 0.8, width, height, 8000)
 horpoly.initgradient()
-const keypoly = new Polio(4, radius, initscale * 0.6, width, height, 8000)
+const keypoly = new Polio(5, radius, initscale * 0.6, width, height, 8000)
 keypoly.color(color[0])
 const play = () => {
-  if (frame === 160)
-    horpoly.init()
-  if (frame === 320)
-    keypoly.init()
+  if (frame === 160) horpoly.init()
+  if (frame === 320) keypoly.init()
   bg("white")
 
   verpoly.draw()
@@ -73,5 +71,5 @@ const pausehandle = (e) => {
     globepauseplay()
   }
 }
-canvas.onpointerdown = canvas.onkeydown = pausehandle
+canvas.onpointerdown = window.onkeydown = pausehandle
 loop(play)

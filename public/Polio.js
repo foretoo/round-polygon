@@ -22,8 +22,7 @@ export class Polio {
     document.body.appendChild(this.image)
     this.ctx = this.image.getContext("2d")
     this.clip = new Path2D()
-    this.getpoint = this.getpoint.bind(this)
-    this.angles = Array(this.num).fill(null).map(this.setangle)
+    this.angles = Array(this.num).fill(null).map(() => ({ a: this.rndangle() * 1.5 }))
     this.points = Array(this.num).fill(null).map((_, i) => ({
       x: this.width / 2 + Math.cos(this.angles[i].a) * this.min / 2,
       y: this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2,
@@ -44,7 +43,10 @@ export class Polio {
     this.player = this.angles.map((_, i) => animate({
       dur: this.dur,
       ease: "cubicInOut",
-      onend: () => this.player[i].on(this.angles[i], this.setangle()),
+      onend: () => {
+        const a = this.angles[i].a + this.rndangle()
+        this.player[i].on(this.angles[i], { a })
+      },
     }))
   }
   pause() {
@@ -57,9 +59,10 @@ export class Polio {
   }
   init() {
     this.updater.on({ t: 0 }, { t: 1 })
-    for (let i = 0; i < this.num; i++) {
-      this.player[i].on(this.angles[i], this.setangle())
-    }
+    this.player.forEach((p, i) => {
+      const a = this.angles[i].a + this.rndangle()
+      p.on(this.angles[i], { a })
+    })
   }
   color(color) {
     this.draw = () => {
@@ -91,12 +94,7 @@ export class Polio {
     }
     Polio.count++
   }
-  getpoint() {
-    return {
-      x: Math.random() * this.width,
-      y: Math.random() * this.height,
-    }
-  }
+  rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
   clippolio() {
     const pr = this.pr
     this.clip = new Path2D()
