@@ -19,12 +19,11 @@ export class Polio {
 
   points: InitPoint[]
   rounded: RoundedPoint[]
-  image: HTMLCanvasElement
   draw: () => void
+  ctx: CanvasRenderingContext2D
   dur: number
 
   private pr: number
-  private ctx: CanvasRenderingContext2D
   private clip: Path2D
   private player: ReturnType<typeof animate>[]
   private updater: ReturnType<typeof animate>
@@ -33,6 +32,7 @@ export class Polio {
 
 
   constructor(
+    ctx: CanvasRenderingContext2D,
     num: number,
     radius: number,
     scale: number,
@@ -42,29 +42,24 @@ export class Polio {
   ) {
     this.id = Polio.count
     this.num = num
-    this.radius = radius
+    this.pr = pxratio()
+    this.radius = radius * this.pr
     this.scale = scale
-    this.width = width
-    this.height = height
+    this.width = width * this.pr
+    this.height = height * this.pr
     this.min = Math.min(width, height) * this.scale
 
+    this.ctx = ctx
     this.draw = () => undefined
     this.color("black")
-    this.pr = pxratio(1)
-    this.image = document.createElement("canvas")
-    this.image.width = width * this.pr
-    this.image.height = height * this.pr
-    this.image.classList.add("bg")
-    document.body.appendChild(this.image)
-    this.ctx = this.image.getContext("2d")!
     this.clip = new Path2D()
 
     this.getpoint = this.getpoint.bind(this)
 
-    this.angles = Array(this.num).fill(null).map(this.setangle)
+    this.angles = Array(this.num).fill(null).map(() => ({ a: this.rndangle() * 1.5 }))
     this.points = Array(this.num).fill(null).map((_, i) => ({
-      x: this.width / 2  + Math.cos(this.angles[i].a) * this.min / 2,
-      y: this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+      x: this.width / 2 / this.pr  + Math.cos(this.angles[i].a) * this.min / 2,
+      y: this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
     }))
     this.rounded = roundPolygon(this.points, this.radius)
 
@@ -74,8 +69,8 @@ export class Polio {
       loop: true,
       ontick: () => {
         this.points.forEach((p, i) => {
-          p.x = this.width / 2  + Math.cos(this.angles[i].a) * this.min / 2
-          p.y = this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+          p.x = this.width / 2 / this.pr  + Math.cos(this.angles[i].a) * this.min / 2
+          p.y = this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
         })
         this.rounded = roundPolygon(this.points, this.radius)
       },
@@ -83,7 +78,10 @@ export class Polio {
     this.player = this.angles.map((_, i) => animate({
       dur: this.dur,
       ease: "cubicInOut",
-      onend: () => this.player[i].on(this.angles[i], this.setangle())
+      onend: () => {
+        const a = this.angles[i].a + this.rndangle()
+        this.player[i].on(this.angles[i], { a })
+      }
     }))
   }
 
@@ -99,18 +97,18 @@ export class Polio {
 
   init() {
     this.updater.on({ t: 0 }, { t: 1 })
-    for (let i = 0; i < this.num; i++) {
-      this.player[i].on(this.angles[i], this.setangle())
-    }
+    this.player.forEach((p, i) => {
+      const a = this.angles[i].a + this.rndangle()
+      p.on(this.angles[i], { a })
+    })
   }
 
   color(color: string) {
     this.draw = () => {
       this.ctx.save()
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
       this.clippolio()
       this.ctx.fillStyle = color
-      this.ctx.fillRect(0, 0, this.image.width, this.image.height)
+      this.ctx.fillRect(0, 0, this.width, this.height)
       this.ctx.restore()
     }
   }
@@ -124,11 +122,10 @@ export class Polio {
 
     this.draw = () => {
       this.ctx.save()
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
       this.clippolio()
 
       gradient.forEach((layer, j) => {
-        const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.image.width, h ? this.image.height : 0)
+        const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.width, h ? this.height : 0)
         layer.forEach((y) => {
           const
             v = noise(frame * layer.length / 5555, y * this.height),
@@ -141,7 +138,7 @@ export class Polio {
           img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
         })
         this.ctx.fillStyle = img
-        this.ctx.fillRect(0, 0, this.image.width, this.image.height)
+        this.ctx.fillRect(0, 0, this.width, this.height)
       })
 
       this.ctx.restore()
@@ -152,7 +149,7 @@ export class Polio {
 
 
 
-  private setangle = () => ({ a: Math.random() * TAU })
+  private rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
 
   private getpoint() {
     return {
