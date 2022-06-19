@@ -3,29 +3,25 @@ import { frame, animate, pxratio, TAU } from "https://unpkg.com/bratik@latest/li
 import roundPolygon from "../lib/round-polygon.es.js"
 const simplex = new SimplexNoise()
 export class Polio {
-  constructor(num, radius, scale, width, height, dur) {
+  constructor(ctx, num, radius, scale, width, height, dur) {
     this.setangle = () => ({ a: Math.random() * TAU })
     this.id = Polio.count
+    this.ctx = ctx
     this.num = num
-    this.radius = radius
+    this.pr = pxratio()
+    this.radius = radius * this.pr
     this.scale = scale
-    this.width = width
-    this.height = height
+    this.width = width * this.pr
+    this.height = height * this.pr
     this.min = Math.min(width, height) * this.scale
     this.draw = () => undefined
     this.color("black")
-    this.pr = pxratio()
-    this.image = document.createElement("canvas")
-    this.image.width = width * this.pr
-    this.image.height = height * this.pr
-    this.image.classList.add("bg")
-    document.body.appendChild(this.image)
-    this.ctx = this.image.getContext("2d")
+
     this.clip = new Path2D()
     this.angles = Array(this.num).fill(null).map(() => ({ a: this.rndangle() * 1.5 }))
     this.points = Array(this.num).fill(null).map((_, i) => ({
-      x: this.width / 2 + Math.cos(this.angles[i].a) * this.min / 2,
-      y: this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2,
+      x: this.width / 2 / this.pr + Math.cos(this.angles[i].a) * this.min / 2,
+      y: this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2,
     }))
     this.rounded = roundPolygon(this.points, this.radius)
     this.dur = dur
@@ -34,8 +30,8 @@ export class Polio {
       loop: true,
       ontick: () => {
         this.points.forEach((p, i) => {
-          p.x = this.width / 2 + Math.cos(this.angles[i].a) * this.min / 2
-          p.y = this.height / 2 + Math.sin(this.angles[i].a) * this.min / 2
+          p.x = this.width / 2 / this.pr + Math.cos(this.angles[i].a) * this.min / 2
+          p.y = this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
         })
         this.rounded = roundPolygon(this.points, this.radius)
       },
@@ -67,10 +63,9 @@ export class Polio {
   color(color) {
     this.draw = () => {
       this.ctx.save()
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
       this.clippolio()
       this.ctx.fillStyle = color
-      this.ctx.fillRect(0, 0, this.image.width, this.image.height)
+      this.ctx.fillRect(0, 0, this.width, this.height)
       this.ctx.restore()
     }
   }
@@ -79,16 +74,15 @@ export class Polio {
     const h = Polio.count % 2 === 0 ? true : false
     this.draw = () => {
       this.ctx.save()
-      this.ctx.clearRect(0, 0, this.image.width, this.image.height)
       this.clippolio()
       gradient.forEach((layer, j) => {
-        const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.image.width, h ? this.image.height : 0)
+        const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.width, h ? this.height : 0)
         layer.forEach((y) => {
           const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
           img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
         })
         this.ctx.fillStyle = img
-        this.ctx.fillRect(0, 0, this.image.width, this.image.height)
+        this.ctx.fillRect(0, 0, this.width, this.height)
       })
       this.ctx.restore()
     }

@@ -1,12 +1,12 @@
 import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect, pxratio } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
 import { Polio } from "./Polio.js"
 const { ctx, canvas, height, width } = getcanvas(), radius = Number.MAX_SAFE_INTEGER, min = Math.min(width, height), initscale = 1.25, control = document.querySelector("label"), color = [ "#7fa", "#a7f", "#fa7" ]
-const verpoly = new Polio(9, radius, initscale, width, height, 8000)
+const verpoly = new Polio(ctx, 9, radius, initscale, width, height, 8000)
 verpoly.initgradient()
 verpoly.init()
-const horpoly = new Polio(7, radius, initscale * 0.8, width, height, 8000)
+const horpoly = new Polio(ctx, 7, radius, initscale * 0.8, width, height, 8000)
 horpoly.initgradient()
-const keypoly = new Polio(5, radius, initscale * 0.6, width, height, 8000)
+const keypoly = new Polio(ctx, 5, radius, initscale * 0.6, width, height, 8000)
 keypoly.color(color[0])
 const play = () => {
   if (frame === 160) horpoly.init()
@@ -17,22 +17,19 @@ const play = () => {
   stroke("#fff4", 1)
   circle(width/2, height/2, min/2*initscale)
   verpoly.draw()
-  ctx.drawImage(verpoly.image, 0, 0)
   vertices(verpoly.points, "#666")
 
   fill(null)
   stroke("#fff4", 1)
   circle(width/2, height/2, min/2*initscale*0.8)
   horpoly.draw()
-  ctx.drawImage(horpoly.image, 0, 0)
-  // lines(horpoly.points, "#fff4")
+  lines(horpoly.points, "#fff4")
   vertices(horpoly.points, "#bbb")
 
   fill(null)
   stroke("#fff4", 1)
   circle(width/2, height/2, min/2*initscale*0.6)
   keypoly.draw()
-  ctx.drawImage(keypoly.image, 0, 0)
   vertices(keypoly.points, color[0])
 }
 function bg(color) {
