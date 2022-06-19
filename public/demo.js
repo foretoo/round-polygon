@@ -11,29 +11,36 @@ keypoly.color(color[0])
 const play = () => {
   if (frame === 160) horpoly.init()
   if (frame === 320) keypoly.init()
-  bg("white")
+  bg("#111")
 
+  fill(null)
+  stroke("#fff4", 1)
+  circle(width/2, height/2, min/2*initscale)
   verpoly.draw()
   ctx.drawImage(verpoly.image, 0, 0)
-  vertices(verpoly.points, "black")
+  vertices(verpoly.points, "#666")
+
+  fill(null)
+  stroke("#fff4", 1)
+  circle(width/2, height/2, min/2*initscale*0.8)
   horpoly.draw()
   ctx.drawImage(horpoly.image, 0, 0)
-  vertices(horpoly.points, "lightgrey")
+  // lines(horpoly.points, "#fff4")
+  vertices(horpoly.points, "#bbb")
+
+  fill(null)
+  stroke("#fff4", 1)
+  circle(width/2, height/2, min/2*initscale*0.6)
   keypoly.draw()
   ctx.drawImage(keypoly.image, 0, 0)
   vertices(keypoly.points, color[0])
-  fill(null)
-  stroke("#0004", 0.5)
-  circle(width / 2, height / 2, min / 2 * initscale)
-  circle(width / 2, height / 2, min / 2 * initscale * 0.8)
-  circle(width / 2, height / 2, min / 2 * initscale * 0.6)
 }
 function bg(color) {
   fill(color)
   rect(0, 0, width, height)
 }
-function lines(points) {
-  stroke("#0004", 0.5)
+function lines(points, color) {
+  stroke(color, 1)
   fill(null)
   shape()
   points.forEach((p) => vertex(p.x, p.y))

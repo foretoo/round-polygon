@@ -84,7 +84,7 @@ export class Polio {
       gradient.forEach((layer, j) => {
         const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.image.width, h ? this.image.height : 0)
         layer.forEach((y) => {
-          const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
+          const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
           img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
         })
         this.ctx.fillStyle = img
