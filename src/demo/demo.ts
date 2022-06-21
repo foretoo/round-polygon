@@ -103,10 +103,10 @@ const pausehandle = (e: KeyboardEvent | MouseEvent) => {
   if (
     e instanceof KeyboardEvent && e.code === "Space" ||
     e instanceof MouseEvent && e.button === 0
-  ) {
+  )
     globepauseplay()
-  }
 }
+
 canvas.onpointerdown = window.onkeydown = pausehandle
 document.onvisibilitychange = globepauseplay
 
