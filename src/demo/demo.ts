@@ -108,5 +108,6 @@ const pausehandle = (e: KeyboardEvent | MouseEvent) => {
   }
 }
 canvas.onpointerdown = window.onkeydown = pausehandle
+document.onvisibilitychange = globepauseplay
 
 loop(play)

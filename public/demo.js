@@ -76,4 +76,5 @@ const pausehandle = (e) => {
   }
 }
 canvas.onpointerdown = window.onkeydown = pausehandle
+document.onvisibilitychange = globepauseplay
 loop(play)
