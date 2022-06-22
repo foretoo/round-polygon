@@ -25,10 +25,10 @@ const getrandpoint = () => ({
 })
 
 const animatepoint = (p: InitPoint, i: number) => {
-  const move = animate(8000, "cubicInOut")
+  const move = animate({ dur: 8000, ease: "cubicInOut" })
   const newpoint = getrandpoint()
   if (i % 2 !== 0) points[i].r = limradius * i
-  move(p, { x: newpoint.x, y: newpoint.y })
+  move.on(p, { x: newpoint.x, y: newpoint.y })
 }
 
 for (let i = 0; i < pointnum; i++) {
