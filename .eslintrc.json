@@ -33,6 +33,7 @@
         "object-property-newline": [ 1, {
             "allowAllPropertiesOnSameLine": true
         }],
+        "nonblock-statement-body-position": [ 1, "beside" ],
         "quotes": [ 1, "double", {
             "allowTemplateLiterals": true
         }],
