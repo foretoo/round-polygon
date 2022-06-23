@@ -39,7 +39,7 @@
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.25.0",
     "@typescript-eslint/parser": "^5.25.0",
-    "bratik": "^0.5.2",
+    "bratik": "^0.5.3",
     "eslint": "^8.16.0",
     "eslint-plugin-import": "^2.26.0",
     "sass": "^1.52.0",
