@@ -15,11 +15,11 @@ const
 
 
 const verpoly = new Polio(ctx, 9, radius, sc, width, height, 8000)
-verpoly.initgradient()
+verpoly.gradient()
 verpoly.init()
 
 const horpoly = new Polio(ctx, 7, radius, sc * 0.8, width, height, 8000)
-horpoly.initgradient()
+horpoly.gradient()
 
 const keypoly = new Polio(ctx, 4, radius, sc * 0.6, width, height, 8000)
 keypoly.color(color[0])
@@ -87,15 +87,15 @@ function centres(polygon: RoundedPoint[], color: string) {
 const globepauseplay = () => {
   if (looping) {
     stop()
-    verpoly.pause()
-    horpoly.pause()
-    keypoly.pause()
+    verpoly.updater.pause()
+    horpoly.updater.pause()
+    keypoly.updater.pause()
   }
   else {
     loop(play)
-    verpoly.play()
-    horpoly.play()
-    keypoly.play()
+    verpoly.updater.paused && verpoly.updater.play()
+    horpoly.updater.paused && horpoly.updater.play()
+    keypoly.updater.paused && keypoly.updater.play()
   }
 }
 

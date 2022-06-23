@@ -17,17 +17,15 @@ export class Polio {
   height: number
   min: number
 
-  points: InitPoint[]
+  points: (InitPoint & { a: number })[]
   rounded: RoundedPoint[]
   draw: () => void
   ctx: CanvasRenderingContext2D
   dur: number
+  updater: ReturnType<typeof animate>
 
   private pr: number
   private clip: Path2D
-  private player: ReturnType<typeof animate>[]
-  private updater: ReturnType<typeof animate>
-  private angles: { a: number }[]
 
 
 
@@ -55,52 +53,37 @@ export class Polio {
     this.clip = new Path2D()
 
     this.getpoint = this.getpoint.bind(this)
+    this.init = this.init.bind(this)
 
-    this.angles = Array(this.num).fill(null).map(() => ({ a: this.rndangle() * 1.5 }))
-    this.points = Array(this.num).fill(null).map((_, i) => ({
-      x: this.width / 2 / this.pr  + Math.cos(this.angles[i].a) * this.min / 2,
-      y: this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
-    }))
+    this.points = Array(this.num).fill(null).map(() => {
+      const a = this.rndangle() * 1.5
+      return {
+        a,
+        x: this.width / 2 / this.pr  + Math.cos(a) * this.min / 2,
+        y: this.height / 2 / this.pr + Math.sin(a) * this.min / 2
+      }})
     this.rounded = roundPolygon(this.points, this.radius)
 
     this.dur = dur
     this.updater = animate({
       dur: this.dur,
-      loop: true,
+      ease: "cubicInOut",
       ontick: () => {
-        this.points.forEach((p, i) => {
-          p.x = this.width / 2 / this.pr  + Math.cos(this.angles[i].a) * this.min / 2
-          p.y = this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
+        this.points.forEach((p) => {
+          p.x = this.width / 2 / this.pr  + Math.cos(p.a) * this.min / 2
+          p.y = this.height / 2 / this.pr + Math.sin(p.a) * this.min / 2
         })
         this.rounded = roundPolygon(this.points, this.radius)
       },
+      onend: this.init
     })
-    this.player = this.angles.map((_, i) => animate({
-      dur: this.dur,
-      ease: "cubicInOut",
-      onend: () => {
-        const a = this.angles[i].a + this.rndangle()
-        this.player[i].on(this.angles[i], { a })
-      }
-    }))
-  }
 
-  pause() {
-    this.updater.pause()
-    this.player.forEach(p => p.pause())
-  }
-
-  play() {
-    this.updater.play()
-    this.player.forEach(p => p.play())
+    Polio.count++
   }
 
   init() {
-    this.updater.on({ t: 0 }, { t: 1 })
-    this.player.forEach((p, i) => {
-      const a = this.angles[i].a + this.rndangle()
-      p.on(this.angles[i], { a })
-    })
+    const newangles = this.points.map(({ a }) => ({ a: (a + this.rndangle()) % TAU }))
+    this.updater.on(this.points, newangles)
   }
 
   color(color: string) {
@@ -113,12 +96,12 @@ export class Polio {
     }
   }
 
-  initgradient() {
+  gradient() {
     const gradient = newarr(3, (_, i) =>
       newarr((this.height / 50) / (i + 1)*(i + 1) | 0, Math.random)
     ).reverse()
 
-    const h = Polio.count % 2 === 0 ? true : false
+    const h = Polio.count % 2 === 1 ? true : false
 
     this.draw = () => {
       this.ctx.save()
@@ -143,8 +126,6 @@ export class Polio {
 
       this.ctx.restore()
     }
-
-    Polio.count++
   }
 
 
