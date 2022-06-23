@@ -1,4 +1,4 @@
-import "./style.sass"
+import "../demo/style.sass"
 import { InitPoint, RoundedPoint } from "../types"
 import {
   getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate
@@ -7,10 +7,10 @@ import roundPolygon from ".."
 
 const
   { canvas, ctx, height, width } = getcanvas(),
-  grey = "#0007",
-  skin = "#f407",
-  highlight = "#e02",
-  control = document.querySelector("label")!,
+  grey = "#fffa",
+  skin = "#7af7",
+  highlight = "#4af",
+  control = document.querySelector("div")!,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
   limradius = 10

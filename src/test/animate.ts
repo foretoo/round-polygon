@@ -1,14 +1,14 @@
-import "./style.sass"
+import "../demo/style.sass"
 import { InitPoint, RoundedPoint } from "../types"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate, pxratio } from "bratik"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate, pxratio, bg } from "bratik"
 import roundPolygon from ".."
 
 const
   { ctx, height, width } = getcanvas(),
   pointnum = 6,
-  grey = "#0007",
-  skin = "#f407",
-  highlight = "#e02",
+  grey = "#fffa",
+  skin = "#7af7",
+  highlight = "#4af",
   padding = 0,
   radiusrange = document.querySelector("input")!,
   radiusvalue = document.querySelector("#radiusvalue")!,
@@ -24,21 +24,24 @@ const getrandpoint = () => ({
   y: padding + Math.random() * (height - padding * 2),
 })
 
-const animatepoint = (p: InitPoint, i: number) => {
-  const move = animate({ dur: 8000, ease: "cubicInOut" })
-  const newpoint = getrandpoint()
-  if (i % 2 !== 0) points[i].r = limradius * i
-  move.on(p, { x: newpoint.x, y: newpoint.y })
-}
-
 for (let i = 0; i < pointnum; i++) {
   points[i] = getrandpoint()
   if (i % 2 !== 0) points[i].r = limradius * i
 }
-points.forEach(animatepoint)
+const move = animate({
+  dur: 8000,
+  ease: "cubicInOut",
+  onend: () => {
+    const newpoints = points.map(getrandpoint)
+    move.on(points, newpoints)
+  }
+})
+const newpoints = points.map(getrandpoint)
+move.on(points, newpoints)
+
+
 
 loop(() => {
-  if (frame % 480 === 0) points.forEach(animatepoint)
   polygon = roundPolygon(points, +radiusrange.value)
   draw()
 })
@@ -62,7 +65,7 @@ function legend() {
   circle(x, y, 10)
 
   stroke(null)
-  fill("black")
+  fill(grey)
   settext("left", "middle")
   text(legendText, x + 20, y)
 }
@@ -74,7 +77,7 @@ printradius()
 
 
 function draw() {
-  clear()
+  bg("#111")
   legend()
 
   stroke(grey, 0.5)
