@@ -4,9 +4,8 @@ import roundPolygon from "../lib/round-polygon.es.js"
 const simplex = new SimplexNoise()
 export class Polio {
   constructor(ctx, num, radius, scale, width, height, dur) {
-    this.setangle = () => ({ a: Math.random() * TAU })
+    this.rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
     this.id = Polio.count
-    this.ctx = ctx
     this.num = num
     this.pr = pxratio()
     this.radius = radius * this.pr
@@ -14,51 +13,39 @@ export class Polio {
     this.width = width * this.pr
     this.height = height * this.pr
     this.min = Math.min(width, height) * this.scale
+    this.ctx = ctx
     this.draw = () => undefined
     this.color("black")
-
     this.clip = new Path2D()
-    this.angles = Array(this.num).fill(null).map(() => ({ a: this.rndangle() * 1.5 }))
-    this.points = Array(this.num).fill(null).map((_, i) => ({
-      x: this.width / 2 / this.pr + Math.cos(this.angles[i].a) * this.min / 2,
-      y: this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2,
-    }))
+    this.getpoint = this.getpoint.bind(this)
+    this.init = this.init.bind(this)
+    this.points = Array(this.num).fill(null).map(() => {
+      const a = this.rndangle() * 1.5
+      return {
+        a,
+        x: this.width / 2 / this.pr + Math.cos(a) * this.min / 2,
+        y: this.height / 2 / this.pr + Math.sin(a) * this.min / 2,
+      }
+    })
     this.rounded = roundPolygon(this.points, this.radius)
     this.dur = dur
     this.updater = animate({
       dur: this.dur,
-      loop: true,
+      ease: "cubicInOut",
       ontick: () => {
-        this.points.forEach((p, i) => {
-          p.x = this.width / 2 / this.pr + Math.cos(this.angles[i].a) * this.min / 2
-          p.y = this.height / 2 / this.pr + Math.sin(this.angles[i].a) * this.min / 2
+        this.points.forEach((p) => {
+          p.x = this.width / 2 / this.pr + Math.cos(p.a) * this.min / 2
+          p.y = this.height / 2 / this.pr + Math.sin(p.a) * this.min / 2
         })
         this.rounded = roundPolygon(this.points, this.radius)
       },
+      onend: this.init,
     })
-    this.player = this.angles.map((_, i) => animate({
-      dur: this.dur,
-      ease: "cubicInOut",
-      onend: () => {
-        const a = this.angles[i].a + this.rndangle()
-        this.player[i].on(this.angles[i], { a })
-      },
-    }))
-  }
-  pause() {
-    this.updater.pause()
-    this.player.forEach((p) => p.pause())
-  }
-  play() {
-    this.updater.play()
-    this.player.forEach((p) => p.play())
+    Polio.count++
   }
   init() {
-    this.updater.on({ t: 0 }, { t: 1 })
-    this.player.forEach((p, i) => {
-      const a = this.angles[i].a + this.rndangle()
-      p.on(this.angles[i], { a })
-    })
+    const newangles = this.points.map(({ a }) => ({ a: (a + this.rndangle()) % TAU }))
+    this.updater.on(this.points, newangles)
   }
   color(color) {
     this.draw = () => {
@@ -69,16 +56,16 @@ export class Polio {
       this.ctx.restore()
     }
   }
-  initgradient() {
+  gradient() {
     const gradient = newarr(3, (_, i) => newarr((this.height / 50) / (i + 1) * (i + 1) | 0, Math.random)).reverse()
-    const h = Polio.count % 2 === 0 ? true : false
+    const h = Polio.count % 2 === 1 ? true : false
     this.draw = () => {
       this.ctx.save()
       this.clippolio()
       gradient.forEach((layer, j) => {
         const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.width, h ? this.height : 0)
         layer.forEach((y) => {
-          const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
+          const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
           img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
         })
         this.ctx.fillStyle = img
@@ -86,9 +73,13 @@ export class Polio {
       })
       this.ctx.restore()
     }
-    Polio.count++
   }
-  rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
+  getpoint() {
+    return {
+      x: Math.random() * this.width,
+      y: Math.random() * this.height,
+    }
+  }
   clippolio() {
     const pr = this.pr
     this.clip = new Path2D()
