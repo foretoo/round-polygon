@@ -1,4 +1,4 @@
-import "./style.sass"
+import "../demo/style.sass"
 import { InitPoint, RoundedPoint } from "../types"
 import {
   getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, loop
