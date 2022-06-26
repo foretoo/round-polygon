@@ -34,6 +34,7 @@
             "allowAllPropertiesOnSameLine": true
         }],
         "nonblock-statement-body-position": [ 1, "beside" ],
+        "max-statements-per-line": [ 1, { "max": 1 }],
         "quotes": [ 1, "double", {
             "allowTemplateLiterals": true
         }],
