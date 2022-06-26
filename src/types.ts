@@ -36,6 +36,7 @@ type RoundedPoint = Linked<Point & {
 }>
 
 export {
+  type Point,
   type InitPoint,
   type PreRoundedPoint,
   type RoundedPoint,
