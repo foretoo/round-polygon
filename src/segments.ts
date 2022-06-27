@@ -1,16 +1,17 @@
 import { Point, RoundedPoint } from "./types"
 
 const PI = Math.PI
-const getSegments = (
+
+export const getSegments = (
   points: RoundedPoint[],
   type: "LENGTH" | "AMOUNT",
   opt: number
 ) => {
 
-  if (!opt) return points.map((p) => ({ x: p.x, y: p.y }))
+  if (!opt) return points
 
-  const formedPolygon = points.reduce((
-    acc: Point[], point
+  return points.reduce((
+    segmented: Point[], point
   ) => {
 
     const
@@ -20,21 +21,14 @@ const getSegments = (
       angle = (dir * PI + next - prev) % PI,
       amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) || 1 : opt,
       unitangle = angle / amount,
-      segments = []
+      vertices = []
 
-    for (let i = 0; i <= amount; i++) {
-      segments.push({
+    for (let i = 0; i <= amount; i++)
+      vertices.push({
         x: x + Math.cos(startangle + unitangle * i) * radius,
         y: y + Math.sin(startangle + unitangle * i) * radius,
       })
-    }
 
-    return acc.concat(segments)
+    return segmented.concat(vertices)
   }, [])
-
-  return formedPolygon
-}
-
-export {
-  getSegments
 }
