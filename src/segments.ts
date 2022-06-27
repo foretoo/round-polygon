@@ -6,11 +6,9 @@ export const getSegments = (
   points: RoundedPoint[],
   type: "LENGTH" | "AMOUNT",
   opt: number
-) => {
+) => (
 
-  if (!opt) return points
-
-  return points.reduce((
+  points.reduce((
     segmented: Point[], point
   ) => {
 
@@ -19,7 +17,7 @@ export const getSegments = (
       dir = point.angle.dir * -1,
       startangle = prev + dir * PI / 2,
       angle = (dir * PI + next - prev) % PI,
-      amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) || 1 : opt,
+      amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) : opt || 1,
       unitangle = angle / amount,
       vertices = []
 
@@ -31,4 +29,4 @@ export const getSegments = (
 
     return segmented.concat(vertices)
   }, [])
-}
+)
