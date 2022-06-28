@@ -6,6 +6,7 @@
   "author": "Sergey Borovikov",
   "license": "MIT",
   "type": "module",
+  "main": "./dist/round-polygon.es.js",
   "module": "./dist/round-polygon.es.js",
   "types": "./dist/index.d.ts",
   "files": [ "./dist" ],
