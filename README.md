@@ -99,7 +99,7 @@ a rounded point is an object with provided properties:
 ```
 ### Segments
 
-from v0.6.8 utilite provides a special `getSegments` function to extract points of segments of every arc. It takes array of rounded points, type of arc division (by `LENGTH` of segments or by `AMOUNT` of points) and a value of this type. It return array of `{ x, y }` points.
+from v0.6.8 package goes with a special `getSegments` function to calculate points of segments of every arc. It takes array of rounded points, type of arc division (by `LENGTH` of segments or by `AMOUNT` of points) and a value of this type. It return array of `{ x, y }` points.
 
 ```javascript
 import { getSegments, Point } from "round-polygon"
