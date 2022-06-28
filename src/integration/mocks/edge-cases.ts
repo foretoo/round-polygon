@@ -1,9 +1,7 @@
-import "../demo/style.sass"
-import { InitPoint, RoundedPoint } from "../types"
-import {
-  getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, loop
-} from "bratik"
-import roundPolygon from ".."
+import { InitPoint, RoundedPoint } from "../../types"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext } from "bratik"
+import roundPolygon from "../.."
+import { radiusrange, radiusvalue } from "./inputs"
 
 const
   { height, width } = getcanvas(),
@@ -11,11 +9,9 @@ const
   ox = width/2 - l*2,
   oy = height/2 - l*2,
   f = 1e-5,
-  grey = "#0007",
-  skin = "#f407",
-  highlight = "#e02",
-  radiusrange = document.querySelector("input")!,
-  radiusvalue = document.querySelector("#radiusvalue")!,
+  grey = "#fffa",
+  skin = "#7af7",
+  highlight = "#4af",
   points: InitPoint[] = [
     // { x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: l*4+ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: l*4+oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },
     
@@ -23,7 +19,7 @@ const
     // { x: l*4+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
     // { x: l*3+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
     // { x: l+ox, y: oy },{ x: l*4+ox, y: oy },{ x: l*2+ox, y: oy },{ x: l*2+ox, y: l*2+oy },{ x: ox, y: l*2+oy },{ x: ox, y: oy },
-    // { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
+    { x: ox, y: oy },{ x: l*4+ox, y: oy },{ x: l+ox, y: oy },{ x: l+ox, y: l*2+oy },{ x: l*3+ox, y: l*2+oy },{ x: l*3+ox, y: oy },
 
     // overlaps
     // { x: l*2+ox, y: oy },{ x: ox, y: oy },{ x: ox, y: l*2+oy },{ x: l*2+ox, y: l*2+oy },{ x: l*2+ox, y: oy },
@@ -53,7 +49,7 @@ radiusrange.oninput = () => {
 
 
 
-function draw() {
+export function draw() {
   clear()
 
   stroke(grey, 0.5)
@@ -104,5 +100,3 @@ function draw() {
     text(`${i}`, x, y)
   })
 }
-
-loop(draw)

@@ -1,18 +1,13 @@
-import "../demo/style.sass"
-import { InitPoint, RoundedPoint } from "../types"
-import {
-  getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate
-} from "bratik"
-import roundPolygon from ".."
+import { InitPoint, RoundedPoint } from "../../types"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, animate } from "bratik"
+import roundPolygon from "../.."
+import { control, radiusrange, radiusvalue } from "./inputs"
 
 const
   { canvas, ctx, height, width } = getcanvas(),
   grey = "#fffa",
   skin = "#7af7",
   highlight = "#4af",
-  control = document.querySelector("div")!,
-  radiusrange = document.querySelector("input")!,
-  radiusvalue = document.querySelector("#radiusvalue")!,
   limradius = 10
 
 control.classList.add("hidden")
@@ -96,7 +91,7 @@ printradius()
 
 
 
-function draw() {
+export function draw() {
   clear()
 
   stroke(grey, 0.5)
@@ -158,5 +153,3 @@ function draw() {
     circle(activePoint.x, activePoint.y, 6)
   }
 }
-
-loop(draw)

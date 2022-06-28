@@ -1,7 +1,7 @@
-import "../demo/style.sass"
-import { InitPoint, RoundedPoint } from "../types"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, loop, animate, pxratio, bg } from "bratik"
-import roundPolygon from ".."
+import { InitPoint, RoundedPoint } from "../../types"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, arc, text, font, settext, frame, animate, pxratio, bg } from "bratik"
+import roundPolygon from "../.."
+import { radiusrange, radiusvalue } from "./inputs"
 
 const
   { ctx, height, width } = getcanvas(),
@@ -10,9 +10,9 @@ const
   skin = "#7af7",
   highlight = "#4af",
   padding = 0,
-  radiusrange = document.querySelector("input")!,
-  radiusvalue = document.querySelector("#radiusvalue")!,
   limradius = 10
+
+
 
 let points: InitPoint[] = [],
     polygon: RoundedPoint[]
@@ -38,14 +38,6 @@ const move = animate({
 })
 const newpoints = points.map(getrandpoint)
 move.on(points, newpoints)
-
-
-
-loop(() => {
-  polygon = roundPolygon(points, +radiusrange.value)
-  draw()
-})
-
 
 
 
@@ -76,7 +68,9 @@ const printradius = () => radiusvalue.textContent = `common radius = ${radiusran
 printradius()
 
 
-function draw() {
+export function draw() {
+  polygon = roundPolygon(points, +radiusrange.value)
+
   bg("#111")
   legend()
 

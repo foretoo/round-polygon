@@ -1,10 +1,43 @@
-import SimplexNoise from "https://unpkg.com/simplex-noise@3.0.1/dist/esm/simplex-noise.js"
-import { frame, animate, pxratio, TAU } from "https://unpkg.com/bratik@latest/lib/bratik.es.js"
-import roundPolygon from "../lib/round-polygon.es.js"
+import { InitPoint, RoundedPoint } from "../../types"
+import { frame, animate, pxratio, TAU } from "bratik"
+import SimplexNoise from "simplex-noise"
+import roundPolygon from "../.."
+
 const simplex = new SimplexNoise()
+
 export class Polio {
-  constructor(ctx, num, radius, scale, width, height, dur) {
-    this.rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
+
+  static count = 0
+
+  id: number
+  num: number
+  radius: number
+  scale: number
+  width: number
+  height: number
+  min: number
+
+  points: (InitPoint & { a: number })[]
+  rounded: RoundedPoint[]
+  draw: () => void
+  ctx: CanvasRenderingContext2D
+  dur: number
+  updater: ReturnType<typeof animate>
+
+  private pr: number
+  private clip: Path2D
+
+
+
+  constructor(
+    ctx: CanvasRenderingContext2D,
+    num: number,
+    radius: number,
+    scale: number,
+    width: number,
+    height: number,
+    dur: number
+  ) {
     this.id = Polio.count
     this.num = num
     this.pr = pxratio()
@@ -13,41 +46,47 @@ export class Polio {
     this.width = width * this.pr
     this.height = height * this.pr
     this.min = Math.min(width, height) * this.scale
+
     this.ctx = ctx
     this.draw = () => undefined
     this.color("black")
     this.clip = new Path2D()
+
     this.getpoint = this.getpoint.bind(this)
     this.init = this.init.bind(this)
+
     this.points = Array(this.num).fill(null).map(() => {
       const a = this.rndangle() * 1.5
       return {
         a,
-        x: this.width / 2 / this.pr + Math.cos(a) * this.min / 2,
-        y: this.height / 2 / this.pr + Math.sin(a) * this.min / 2,
-      }
-    })
+        x: this.width / 2 / this.pr  + Math.cos(a) * this.min / 2,
+        y: this.height / 2 / this.pr + Math.sin(a) * this.min / 2
+      }})
     this.rounded = roundPolygon(this.points, this.radius)
+
     this.dur = dur
     this.updater = animate({
       dur: this.dur,
       ease: "cubicInOut",
       ontick: () => {
         this.points.forEach((p) => {
-          p.x = this.width / 2 / this.pr + Math.cos(p.a) * this.min / 2
+          p.x = this.width / 2 / this.pr  + Math.cos(p.a) * this.min / 2
           p.y = this.height / 2 / this.pr + Math.sin(p.a) * this.min / 2
         })
         this.rounded = roundPolygon(this.points, this.radius)
       },
-      onend: this.init,
+      onend: this.init
     })
+
     Polio.count++
   }
+
   init() {
     const newangles = this.points.map(({ a }) => ({ a: (a + this.rndangle()) % TAU }))
     this.updater.on(this.points, newangles)
   }
-  color(color) {
+
+  color(color: string) {
     this.draw = () => {
       this.ctx.save()
       this.clippolio()
@@ -56,31 +95,51 @@ export class Polio {
       this.ctx.restore()
     }
   }
+
   gradient() {
-    const gradient = newarr(3, (_, i) => newarr((this.height / 50) / (i + 1) * (i + 1) | 0, Math.random)).reverse()
+    const gradient = newarr(3, (_, i) =>
+      newarr((this.height / 50) / (i + 1)*(i + 1) | 0, Math.random)
+    ).reverse()
+
     const h = Polio.count % 2 === 1 ? true : false
+
     this.draw = () => {
       this.ctx.save()
       this.clippolio()
+
       gradient.forEach((layer, j) => {
         const img = this.ctx.createLinearGradient(0, 0, h ? 0 : this.width, h ? this.height : 0)
         layer.forEach((y) => {
-          const v = noise(frame * layer.length / 5555, y * this.height), value = h ? v * v * v : 1 - (v * v * v), r = value * 255, g = value * 255, b = value * 255, a = 1 - j / gradient.length
+          const
+            v = noise(frame * layer.length / 5555, y * this.height),
+            value = h ? v * v * v : 1 - (v * v * v),
+            r = value * 255,
+            g = value * 255,
+            b = value * 255,
+            a = 1 - j / gradient.length
+
           img.addColorStop(y, `rgba(${r},${g},${b},${a})`)
         })
         this.ctx.fillStyle = img
         this.ctx.fillRect(0, 0, this.width, this.height)
       })
+
       this.ctx.restore()
     }
   }
-  getpoint() {
+
+
+
+  private rndangle = () => (Math.random() - 0.5) * TAU * 4 / 3
+
+  private getpoint() {
     return {
       x: Math.random() * this.width,
       y: Math.random() * this.height,
     }
   }
-  clippolio() {
+
+  private clippolio() {
     const pr = this.pr
     this.clip = new Path2D()
     this.rounded.forEach((p, i) => {
@@ -91,12 +150,14 @@ export class Polio {
     this.ctx.clip(this.clip)
   }
 }
-Polio.count = 0
-function noise(x, y) {
-  return (simplex.noise2D(x, y) + 1) / 2
+
+function noise(x: number, y: number) {
+  return ( simplex.noise2D(x, y) + 1 ) / 2
 }
-function newarr(length, mapper) {
+
+type Mapper<T> = (value: unknown, index: number) => T
+function newarr<T>(length: number, mapper: T | Mapper<T>): T[] {
   return Object.prototype.toString.call(mapper) === "[object Function]"
-    ? Array(length).fill(null).map(mapper)
-    : Array(length).fill(mapper)
+  ? Array(length).fill(null).map(mapper as Mapper<T>)
+  : Array(length).fill(mapper as T)
 }

@@ -1,10 +1,8 @@
-import "../demo/style.sass"
-import { InitPoint, RoundedPoint } from "../types"
-import {
-  getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, text, font, settext, loop
-} from "bratik"
-import roundPolygon from ".."
-import { getSegments } from "../segments"
+import { InitPoint, RoundedPoint } from "../../types"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, text, font, settext } from "bratik"
+import roundPolygon from "../.."
+import { getSegments } from "../../segments"
+import { radiusrange, radiusvalue } from "./inputs"
 
 const
   { height, width } = getcanvas(),
@@ -14,8 +12,6 @@ const
   grey = "#fffa",
   skin = "#7af7",
   highlight = "#4af",
-  radiusrange = document.querySelector("input")!,
-  radiusvalue = document.querySelector("#radiusvalue")!,
   points: InitPoint[] = [
     { x: l*5+ox,  y: l*2+oy },
     { x: l*3+ox,  y: oy     },
@@ -36,7 +32,7 @@ formedPolygon = getSegments(polygon, "LENGTH", 10)
 
 
 
-function draw() {
+export function draw() {
   clear()
 
   //// Rounded fill
@@ -70,4 +66,3 @@ radiusrange.oninput = () => {
   formedPolygon = getSegments(polygon, "LENGTH", 4)
   draw()
 }
-draw()

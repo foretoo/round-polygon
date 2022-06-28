@@ -1,7 +1,6 @@
-import "./style.sass"
-import { InitPoint, RoundedPoint } from "../types"
+import { InitPoint, RoundedPoint } from "../../types"
 import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect, animate, text, font, settext, line, TAU, pxratio } from "bratik"
-import { Polio } from "./Polio"
+import { Polio } from "../helpers/Polio"
 
 
 
@@ -26,7 +25,7 @@ keypoly.color(color[0])
 
 
 
-const play = () => {
+export function draw() {
   
   if (frame === 160) horpoly.init()
   if (frame === 320) keypoly.init()
@@ -92,7 +91,7 @@ const globepauseplay = () => {
     keypoly.updater.pause()
   }
   else {
-    loop(play)
+    loop(draw)
     verpoly.updater.paused && verpoly.updater.play()
     horpoly.updater.paused && horpoly.updater.play()
     keypoly.updater.paused && keypoly.updater.play()
@@ -109,5 +108,3 @@ const pausehandle = (e: KeyboardEvent | MouseEvent) => {
 
 canvas.onpointerdown = window.onkeydown = pausehandle
 document.onvisibilitychange = globepauseplay
-
-loop(play)
