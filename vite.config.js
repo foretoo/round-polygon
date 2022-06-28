@@ -9,10 +9,11 @@ export default defineConfig({
   },
   publicDir: false,
   build: {
+    rollupOptions: { output: { exports: "named" }},
     lib: {
       entry: path.resolve(__dirname, "src/index.ts"),
       name: "roundPolygon",
-      formats: [ "es", "cjs", "iife" ]
+      formats: [ "es", "cjs", "iife" ],
     },
     target: "esnext",
     outDir: "lib",
