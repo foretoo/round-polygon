@@ -5,12 +5,10 @@
   "keywords": [ "2d", "tool", "library", "geometry", "round", "arc", "circle", "polygon", "shape", "corner" ],
   "author": "Sergey Borovikov",
   "license": "MIT",
-  "module": "./lib/round-polygon.es.js",
-  "main": "./lib/round-polygon.cjs.js",
-  "types": "./lib/index.d.ts",
-  "files": [
-    "/lib"
-  ],
+  "type": "module",
+  "module": "./dist/round-polygon.es.js",
+  "types": "./dist/index.d.ts",
+  "files": [ "./dist" ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/foretoo/round-polygon.git"
@@ -20,20 +18,25 @@
   },
   "homepage": "https://github.com/foretoo/round-polygon#readme",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "public": "sass src/demo/style.sass public/style.css --no-source-map && tsc --project tsconfig.public.json",
-    "preview": "vite preview"
+    "public": "rollup -c config/public.ts",
+    "dev": "rollup -c config/dev.ts -w",
+    "build": "rollup -c config/build.ts"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^5.25.0",
-    "@typescript-eslint/parser": "^5.25.0",
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@typescript-eslint/eslint-plugin": "^5.29.0",
+    "@typescript-eslint/parser": "^5.29.0",
     "bratik": "^0.5.3",
     "eslint": "^8.18.0",
-    "sass": "^1.52.0",
+    "rollup": "^2.75.7",
+    "rollup-plugin-dts": "^4.2.2",
+    "rollup-plugin-esbuild": "^4.9.1",
+    "rollup-plugin-eslint-bundle": "^7.0.0",
+    "rollup-plugin-livereload": "^2.0.5",
+    "rollup-plugin-sass": "^1.2.12",
+    "rollup-plugin-serve": "^1.1.0",
     "simplex-noise": "^3.0.1",
-    "typescript": "^4.5.4",
-    "vite": "^2.9.9",
-    "vite-plugin-dts": "^1.1.1"
+    "typescript": "^4.7.4"
   }
 }
