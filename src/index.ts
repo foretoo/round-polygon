@@ -1,4 +1,4 @@
-import { InitPoint, PreRoundedPoint, RoundedPoint } from "./types"
+import { Point, InitPoint, PreRoundedPoint, RoundedPoint } from "./types"
 import { round, getLength, getAngles, PI } from "./utils"
 import { getSegments } from "./segments"
 
@@ -274,4 +274,11 @@ const getMinHit = (
 
 
 
-export { roundPolygon as default, getSegments }
+export {
+  roundPolygon as default,
+  getSegments,
+
+  type Point,
+  type InitPoint,
+  type RoundedPoint,
+}
