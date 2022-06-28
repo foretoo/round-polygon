@@ -31,7 +31,7 @@ export default defineConfig([
   {
     input: "./src/index.ts",
     output: {
-      file: "./dist/round-polygon.d.ts"
+      file: "./dist/index.d.ts"
     },
     plugins: [dts()],
   },
