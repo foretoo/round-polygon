@@ -1,7 +1,7 @@
 
 # round-polygon
 
-Small, typed, dependency-free tool to round corners of 2d-polygon provided by an array of `{ x, y }` points.
+Small, typed, dependency-free tool to round corners of any 2d-polygon provided by an array of `{ x, y }` points.
 
 The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
 
@@ -142,7 +142,7 @@ ctx.stroke()
 
 ### Upcoming
 - input and output might be SVG path
-- provide array of points aligned on arc, number of points of each arc or length between points should be defined as an argument
+- ~~provide array of points aligned on arc, number of points of each arc or length between points should be defined as an argument~~
 - provide bezier curve estimations as an alernative to an arc output propperty
   ```typescript
   {
