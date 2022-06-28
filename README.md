@@ -22,11 +22,11 @@ import roundPolygon from "round-polygon"
 ```
 or if you don't use npm you can import module from unpkg:
 ```javascript
-import roundPolygon from "https://unpkg.com/round-polygon@latest/lib/round-polygon.es.js"
+import roundPolygon from "https://unpkg.com/round-polygon@latest/dist/round-polygon.es.js"
 ```
 or by script tag (with a link to IIFE module) in your html page:
 ```html
-<script src="https://unpkg.com/round-polygon@latest/lib/round-polygon.iife.js"></script>
+<script src="https://unpkg.com/round-polygon@latest/dist/round-polygon.iife.js"></script>
 ```
 
 ## Usage
@@ -97,6 +97,17 @@ a rounded point is an object with provided properties:
   next: {...} // a getter, returns next-indexed rounded point
 }
 ```
+### Segments
+
+from v0.6.8 utilite provides a special `getSegments` function to extract points of segments of every arc. It takes array of rounded points, type of arc division (by `LENGTH` of segments or by `AMOUNT` of points) and a value of this type. It return array of `{ x, y }` points.
+
+```javascript
+import { getSegments, Point } from "round-polygon"
+
+let segments: Point[]
+
+segments = getSegments(roundedPolygon, "LENGTH", 20)
+```
 ### Summary
 so the whole approach to draw a rounded shape using, for example, Canvas API looks like this:
 
@@ -113,20 +124,32 @@ const
     { x: 150, y: 200 },
   ],
   radius = 1000,
-  roundedPolygon = roundPolygon(polygonToRound, radius)
+  roundedPolygon = roundPolygon(polygonToRound, radius),
+  segments = getSegments(roundedPolygon, "LENGTH", 10)
 
-// draw
+// draw rounded shape
 ctx.beginPath()
-roundedPolygon.forEach((p) => {
-  ctx.moveTo(p.in.x, p.in.y)
+roundedPolygon.forEach((p, i) => {
+  !i && ctx.moveTo(p.in.x, p.in.y)
   ctx.arcTo(p.x, p.y, p.out.x, p.out.y, p.arc.radius)
   ctx.lineTo(p.next.in.x, p.next.in.y)
 })
 ctx.stroke()
+
+// draw segments of rounded shape
+segments.forEach((p) => {
+  ctx.beginPath()
+  ctx.arc(p.x, p.y, 2, 0, Math.PI*2)
+  ctx.fill()
+})
 ```
 ![example](./public/readme-example.png)
 
 ## Changelog
+
+### v0.6.6
+- add `getSegments` utilite to calculate segments of rounded corner arc
+- cleaner code
 
 ### v0.6.4
 - common radius doesn't affect init-points with "r" = 0
@@ -142,22 +165,4 @@ ctx.stroke()
 
 ### Upcoming
 - input and output might be SVG path
-- ~~provide array of points aligned on arc, number of points of each arc or length between points should be defined as an argument~~
 - provide bezier curve estimations as an alernative to an arc output propperty
-  ```typescript
-  {
-    in: { ...,
-      handle: { x: number, y: number }
-    },
-    out: { ...,
-      handle: { x: number, y: number }
-    },
-    // if main_angle < PI / 2 (so, arc > PI / 2)
-    mid: {
-      x: number,
-      y: number,
-      in: { x: number, y: number },
-      out: { x: number, y: number }
-    }
-  }
-  ```
