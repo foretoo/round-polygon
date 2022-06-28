@@ -1,3 +1,7 @@
+declare type Point = {
+  x: number;
+  y: number;
+}
 declare type InitPoint = {
   x:  number;
   y:  number;
@@ -21,10 +25,23 @@ declare type RoundedPoint = {
   id:   number;
   prev: RoundedPoint;
   next: RoundedPoint;
-};
+}
 
 declare const roundPolygon: (
   points: InitPoint[], radius: number
-) => RoundedPoint[];
+) => RoundedPoint[]
 
-export { roundPolygon as default, type InitPoint, type RoundedPoint };
+declare const getSegments: (
+  points: RoundedPoint[],
+  type: "LENGTH" | "AMOUNT",
+  opt: number
+) => Point[]
+
+export {
+  roundPolygon as default,
+  getSegments,
+
+  type Point,
+  type InitPoint,
+  type RoundedPoint,
+}
