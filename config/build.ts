@@ -10,14 +10,15 @@ export default defineConfig([
     input: "./src/index.ts",
     output: [
       {
-        file: "./dist/index.es.js",
+        file: "./dist/round-polygon.es.js",
         format: "es",
         exports: "named",
       },
       {
-        file: "./dist/index.iife.js",
+        file: "./dist/round-polygon.iife.js",
         format: "iife",
-        name: "toolkit"
+        exports: "named",
+        name: "roundPolygon"
       }
     ],
     plugins: [
@@ -30,7 +31,7 @@ export default defineConfig([
   {
     input: "./src/index.ts",
     output: {
-      file: "./dist/index.d.ts"
+      file: "./dist/round-polygon.d.ts"
     },
     plugins: [dts()],
   },
