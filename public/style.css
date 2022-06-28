@@ -43,7 +43,11 @@ div, p {
 }
 
 div {
+  width: 50%;
+  top: 2rem;
   display: grid;
+  place-self: start center;
+  gap: 0.5rem;
 }
 div.hidden {
   display: none;
