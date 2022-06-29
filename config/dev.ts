@@ -6,7 +6,6 @@ import sass from "rollup-plugin-sass"
 import serve from "rollup-plugin-serve"
 import livereload from "rollup-plugin-livereload"
 import { inliner } from "./helpers/js-inliner"
-import { template } from "../src/integration/helpers/template"
 
 
 
@@ -20,7 +19,7 @@ export default defineConfig({
     nodeResolve(),
     commonjs(),
     sass({ insert: true }),
-    inliner(template),
+    inliner(),
     serve({
       open: process.env.served === "true" ? false : true,
       contentBase: "./src/integration",
