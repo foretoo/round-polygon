@@ -12,6 +12,8 @@ const
   grey = "#fffa",
   skin = "#7af7",
   highlight = "#4af",
+  segopt = 10,
+  segtype = "LENGTH",
   points: InitPoint[] = [
     { x: l*5+ox,  y: l*2+oy },
     { x: l*3+ox,  y: oy     },
@@ -28,7 +30,7 @@ let polygon: RoundedPoint[],
 
 
 polygon = roundPolygon(points, +radiusrange.value)
-formedPolygon = getSegments(polygon, "LENGTH", 10)
+formedPolygon = getSegments(polygon, segtype, segopt)
 
 
 
@@ -63,6 +65,6 @@ export function draw() {
 radiusrange.oninput = () => {
   radiusvalue.textContent = radiusrange.value
   polygon = roundPolygon(points, +radiusrange.value)
-  formedPolygon = getSegments(polygon, "LENGTH", 4)
+  formedPolygon = getSegments(polygon, segtype, segopt)
   draw()
 }
