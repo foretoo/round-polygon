@@ -1,6 +1,6 @@
 import { InitPoint, RoundedPoint } from "../../types"
 import { getcanvas, circle, shape, vertex, CLOSE, fill, stroke, frame, loop, stop, looping, rect } from "bratik"
-import { Polio } from "../helpers/Polio"
+import { Polio } from "./Polio"
 
 
 
