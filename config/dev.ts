@@ -5,7 +5,7 @@ import esbuild from "rollup-plugin-esbuild"
 import sass from "rollup-plugin-sass"
 import serve from "rollup-plugin-serve"
 import livereload from "rollup-plugin-livereload"
-import { inliner } from "./helpers/js-inliner"
+import { inliner } from "./plugins/js-inliner"
 
 
 
@@ -15,9 +15,9 @@ export default defineConfig({
     file: "./src/integration/index.html",
   },
   plugins: [
-    esbuild(),
     nodeResolve(),
     commonjs(),
+    esbuild(),
     sass({ insert: true }),
     inliner(),
     serve({
