@@ -14,7 +14,7 @@ export default defineConfig({
     format: "es",
     paths: (id) =>
         id.includes("src/index.ts") ? "../dist/round-polygon.es.js"
-      : id === "bratik"             ? "https://unpkg.com/bratik@latest/lib/bratik.es.js"
+      : id === "bratik"             ? "https://unpkg.com/bratik@latest/dist/bratik.min.js"
       : id === "simplex-noise"      ? "https://unpkg.com/simplex-noise@3.0.1/dist/esm/simplex-noise.js"
       : "",
   },
