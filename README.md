@@ -99,13 +99,14 @@ a rounded point is an object with provided properties:
 ```
 ### Segments
 
-from v0.6.6 package goes with a special `getSegments` function to calculate points of segments of every arc. It takes array of rounded points, type of arc division (by `LENGTH` of segments or by `AMOUNT` of points) and a value of this type. It return array of `{ x, y }` points.
+You might need the rounded polygon provided with only `{ x, y }` points, so every arc should be divided by segments of stright lines. Given `getSegments` function does that, it calculates coordinates of segmented arcs points. It takes array of rounded points, type of arc division (by `LENGTH` of segments or by `AMOUNT` of points) and a value to divide by corresponded to this type. It returns an array of `{ x, y }` points.
 
-```javascript
-import { getSegments, Point } from "round-polygon"
+```typescript
+import roundPolygon, { getSegments, Point } from "round-polygon"
 
 let segments: Point[]
 
+roundedPolygon = roundPolygon(polygonToRound, radius)
 segments = getSegments(roundedPolygon, "LENGTH", 20)
 ```
 ### Summary
@@ -165,4 +166,4 @@ segments.forEach((p) => {
 
 ### Upcoming
 - input and output might be SVG path
-- provide bezier curve estimations as an alernative to an arc output propperty
+- provide bezier curve estimations as an alternative to an arc output property
