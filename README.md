@@ -148,6 +148,9 @@ segments.forEach((p) => {
 
 ## Changelog
 
+### v0.6.7
+- fix: getting NaN's by `getSegments` on some edge cases
+
 ### v0.6.6
 - add `getSegments` utilite to calculate segments of rounded corner arc
 - cleaner code
