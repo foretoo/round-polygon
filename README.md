@@ -24,9 +24,9 @@ or if you don't use npm you can import module from unpkg:
 ```javascript
 import roundPolygon from "https://unpkg.com/round-polygon@latest/dist/round-polygon.es.js"
 ```
-or by script tag (with a link to IIFE module) in your html page:
+or by script tag (with a link to IIFE module, which pollutes global scope with roundPolygon and getSegments functions) in your html page:
 ```html
-<script src="https://unpkg.com/round-polygon@latest/dist/round-polygon.iife.js"></script>
+<script src="https://unpkg.com/round-polygon@latest/dist/round-polygon.iife.js"></script> 
 ```
 
 ## Usage

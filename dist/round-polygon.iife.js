@@ -1,6 +1,5 @@
 var roundPolygon = (function(exports) {
   "use strict"
-
   const round = (n) => Math.round(n * 1e10) / 1e10
   const getLength = (A, B) => round(Math.sqrt((B.x - A.x) * (B.x - A.x) + (B.y - A.y) * (B.y - A.y)))
   const PI = Math.PI, TAU = PI * 2
@@ -144,13 +143,13 @@ var roundPolygon = (function(exports) {
 })({})
 
 var getSegments = (function(exports) {
-  "use strict"
   const PI = Math.PI
   const getSegments = (points, type, opt) => points.reduce((segmented, point) => {
-    const { angle: { prev, next }, arc: { x, y, radius }} = point, dir = point.angle.dir * -1, startangle = prev + dir * PI / 2, angle = (dir * PI + next - prev) % PI, amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) : opt || 1, unitangle = angle / amount, vertices = []
+    const { x, y, angle: { prev, next }, arc: { x: rx, y: ry, radius }} = point, dir = point.angle.dir * -1, startangle = prev + dir * PI / 2, angle = (dir * PI + next - prev) % PI, amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) : (opt || 1) - 1, unitangle = angle / amount, vertices = []
+    if (!amount || !unitangle) return segmented.concat({ x, y })
     for (let i = 0; i <= amount; i++) vertices.push({
-      x: x + Math.cos(startangle + unitangle * i) * radius,
-      y: y + Math.sin(startangle + unitangle * i) * radius,
+      x: rx + Math.cos(startangle + unitangle * i) * radius,
+      y: ry + Math.sin(startangle + unitangle * i) * radius,
     })
     return segmented.concat(vertices)
   }, [])

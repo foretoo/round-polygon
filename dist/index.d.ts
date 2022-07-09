@@ -35,4 +35,4 @@ declare const getSegments: (points: RoundedPoint[], type: "LENGTH" | "AMOUNT", o
 
 declare const roundPolygon: (points: InitPoint[], radius?: number) => RoundedPoint[];
 
-export { InitPoint, Point, RoundedPoint, roundPolygon as default, getSegments };
+export { roundPolygon as default, getSegments, Point, InitPoint, RoundedPoint };
