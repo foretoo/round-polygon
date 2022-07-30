@@ -5,10 +5,14 @@
     "lib": ["ESNext","DOM"],
     "moduleResolution": "Node",
     "strict": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "esModuleInterop": true,
     "noEmit": true,
     "skipLibCheck": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "ts-node": {
+    "transpileOnly": true
+  },
+  "swc": true
 }
