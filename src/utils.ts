@@ -37,15 +37,3 @@ export const getAngles = (
 
   return { prev, next, main, vel, dir, bis }
 }
-
-export const assignValue = <T>(
-  value: T, arr: T[], length: number
-) => {
-  if (arr.length < length) arr.push(value)
-  else {
-    for (let i = 0; i < arr.length - 1; i++) {
-      arr[i] = arr[i + 1]
-    }
-    arr[length - 1] = value
-  }
-}
