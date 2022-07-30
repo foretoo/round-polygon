@@ -1,25 +1,25 @@
 import { InitPoint, RoundedPoint } from "../../types"
-import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, text, font, settext } from "bratik"
+import { getcanvas, circle, shape, vertex, CLOSE, clear, fill, stroke, text, font, settext, pxratio } from "bratik"
 import roundPolygon from "../.."
 import { getSegments } from "../../segments"
 import { radiusrange, radiusvalue } from "./inputs"
 
 const
-  { height, width } = getcanvas(),
-  l = 50,
-  ox = width/2  - l*2,
-  oy = height/2 - l*2,
+  { ctx, height, width } = getcanvas(),
+  pr = pxratio(),
+  l = 100,
   grey = "#fffa",
   skin = "#7af7",
   highlight = "#4af",
-  segopt = 10,
+  segopt = l / 2,
   segtype = "LENGTH",
   points: InitPoint[] = [
-    { x: l*5+ox,  y: l*2+oy },
-    { x: l*3+ox,  y: oy     },
-    { x: l*3+ox,  y: l*4+oy },
-    { x: ox-l,    y: l*4+oy },
-  ]//.reverse()
+    { x: 0, y: 0 },
+    { x: l, y: 0 },
+    { x: l, y: l },
+    { x: 0, y: l },
+  ]
+
 
 radiusrange.value = "25"
 radiusrange.max = "100"
@@ -35,7 +35,9 @@ formedPolygon = getSegments(polygon, segtype, segopt)
 
 
 export function draw() {
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
   clear()
+  ctx.translate((width / 2 - l / 2) * pr, (height / 2 - l / 2) * pr)
 
   //// Rounded fill
   fill(skin)
