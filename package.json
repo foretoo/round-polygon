@@ -21,7 +21,8 @@
   "scripts": {
     "public": "rollup -c config/public.ts",
     "dev": "rollup -c config/dev.ts -w",
-    "build": "rollup -c config/build.ts"
+    "build": "rollup -c config/build.ts",
+    "test": "jest"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^22.0.1",
