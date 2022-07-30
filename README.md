@@ -1,7 +1,7 @@
 
 # round-polygon
 
-Small, typed, dependency-free tool to round corners of arbitrary 2d-polygon provided by an array of `{ x, y }` points.
+Small, typed, dependency-free tool to round corners of an arbitrary polygon provided by an array of `{ x, y }` points.
 
 The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
 
