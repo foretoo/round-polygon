@@ -17,7 +17,7 @@ export const getSegments = (
       dir = point.angle.dir * -1,
       startangle = prev + dir * PI / 2,
       angle = (dir * PI + next - prev) % PI,
-      amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) : (opt || 1) - 1,
+      amount = type === "LENGTH" ? Math.round(dir * angle * radius / opt) : opt,
       unitangle = angle / amount,
       vertices: Point[] = []
 
