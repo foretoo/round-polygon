@@ -2,10 +2,13 @@ import type { Config } from "@jest/types"
 
 const config: Config.InitialOptions = {
   
-  rootDir: "src/tests",
+  collectCoverage: true,
+  collectCoverageFrom: [ "index.ts", "segments.ts", "utils.ts" ],
+  coverageReporters: [ "text" ],
+  rootDir: "src",
   verbose: true,
   transform: {
-    "^.+\\.(t|j)sx?$": "@swc/jest",
+    "^.+\.(t|j)s$": "@swc/jest",
   },
 }
 
