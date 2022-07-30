@@ -8,9 +8,26 @@ const points = [
 ]
 const polygon = roundPolygon(points, 1)
 
-test("AMOUNT==1, square should transform to circle with 4 segments", () => {
-  expect(getSegments(polygon, "AMOUNT", 1).length).toBe(4)
+
+
+test("AMOUNT=0, square should transform to circle with 4 edges", () => {
+  expect(getSegments(polygon, "AMOUNT", 0).length).toBe(4)
 })
-test("AMOUNT==2, square should transform to circle with 8 segments", () => {
-  expect(getSegments(polygon, "AMOUNT", 2).length).toBe(8)
+test("AMOUNT=1, square should transform to circle with 8 edges", () => {
+  expect(getSegments(polygon, "AMOUNT", 1).length).toBe(8)
+})
+test("AMOUNT=2, square should transform to circle with 12 edges", () => {
+  expect(getSegments(polygon, "AMOUNT", 2).length).toBe(12)
+})
+
+
+
+test("LENGTH=0, square should transform to circle with 4 edges", () => {
+  expect(getSegments(polygon, "LENGTH", 0).length).toBe(4)
+})
+test("LENGTH=1, square should transform to circle with 8 edges", () => {
+  expect(getSegments(polygon, "LENGTH", 1).length).toBe(8)
+})
+test("LENGTH=0.5, square should transform to circle with 12 edges", () => {
+  expect(getSegments(polygon, "LENGTH", 0.5).length).toBe(12)
 })
