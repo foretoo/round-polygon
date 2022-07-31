@@ -10,7 +10,7 @@ const polygon = roundPolygon(points, 1)
 
 
 
-test("AMOUNT=0, square should transform to circle with 4 edges", () => {
+test("AMOUNT=0, square should not transform", () => {
   expect(getSegments(polygon, "AMOUNT", 0).length).toBe(4)
 })
 test("AMOUNT=1, square should transform to circle with 8 edges", () => {
@@ -22,7 +22,7 @@ test("AMOUNT=2, square should transform to circle with 12 edges", () => {
 
 
 
-test("LENGTH=0, square should transform to circle with 4 edges", () => {
+test("LENGTH=0, square should not transform", () => {
   expect(getSegments(polygon, "LENGTH", 0).length).toBe(4)
 })
 test("LENGTH=1, square should transform to circle with 8 edges", () => {
