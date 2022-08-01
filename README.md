@@ -1,6 +1,11 @@
 
 # round-polygon
 
+[![round-polygon npm version 0.6.7](https://img.shields.io/badge/npm-v0.6.7-blue)](https://www.npmjs.com/package/round-polygon)
+![minified size](https://img.shields.io/bundlephobia/min/round-polygon)
+[![round-polygon npm version 0.6.7](https://img.shields.io/badge/tests-100%-success)](https://github.com/foretoo/round-polygon/tree/main/src/tests)
+![license](https://img.shields.io/github/license/foretoo/round-polygon)
+
 Small, typed, dependency-free tool to round corners of an arbitrary polygon provided by an array of `{ x, y }` points.
 
 The algorithm prevents rounding overlaps, so if you pass an oversized radius, it won't break the shape, but instead calculate the maximum radius of each point, just like you expect.
