@@ -34,7 +34,7 @@ const MPoints: InitPoint[] = [
 MPoints.forEach((p, i) => i < MPoints.length - 1 && (p.r = 2))
 const MTom = roundPolygon(MPoints, 2)
 
-test("'M' shape should round to 'ო' shape, with one common radius point in the middle", () => {
+test("the 'M' shape should round to the 'ო' shape, with one common radius point in the middle", () => {
   MTom.forEach((p, i) => {
     if (i < MPoints.length - 1) {
       expect(p.offset).toBeCloseTo(i % 3 ? 2 - Math.SQRT2 : Math.SQRT2)
@@ -58,7 +58,7 @@ const mPoints: InitPoint[] = [
 mPoints.forEach((p, i) => i < 3 && (p.r = 1))
 const mToWave = roundPolygon(mPoints, 1)
 
-test("'M' shape should round to wave shape, with two common radius points in the bottom edges'", () => {
+test("the 'M' shape should round to a wave shape, with two common-radius points in the bottom edges'", () => {
   const v = Math.SQRT2 - 1
   const k = 2 - Math.SQRT2
   mToWave.forEach((p, i) => {
@@ -87,7 +87,7 @@ const diamondPoints = [
 ]
 const diamondToHeart = roundPolygon(diamondPoints)
 
-test("a diamond should round to a heart, with point-radii on top and middle edges, and without common radius", () => {
+test("a diamond should round to a heart, with a point-radii on top and middle edges, and without a common radius", () => {
   diamondToHeart.forEach((p, i) => {
     if (i === 2) {
       expect(p.offset).toBeCloseTo(0)
