@@ -1,5 +1,5 @@
 import "./style.sass"
-import { draw } from "./mocks/segments"
+import { draw } from "./mocks/main"
 import { loop } from "bratik"
 
-draw()
+loop(draw)
