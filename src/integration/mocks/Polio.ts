@@ -1,9 +1,9 @@
 import { InitPoint, RoundedPoint } from "../../types"
 import { frame, animate, pxratio, TAU } from "bratik"
-import SimplexNoise from "simplex-noise"
+import { createNoise2D } from "simplex-noise"
 import roundPolygon from "../.."
 
-const simplex = new SimplexNoise()
+const noise2D = createNoise2D()
 
 export class Polio {
 
@@ -152,7 +152,7 @@ export class Polio {
 }
 
 function noise(x: number, y: number) {
-  return ( simplex.noise2D(x, y) + 1 ) / 2
+  return ( noise2D(x, y) + 1 ) / 2
 }
 
 type Mapper<T> = (value: unknown, index: number) => T
